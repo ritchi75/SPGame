@@ -12,6 +12,45 @@ import JavaFiles.Character;
 public class Warrior extends JavaFiles.Character {
 
 
+    // default constructor for an object of type warrior
+    public Warrior()
+    {
+        super.name = "Warrior";
+        super.moves = getWarriorMoves();
+        super.stat = getWarriorStats();
+        super.inventory = new ArrayList<Item>(); //no items for now
+    }
+
+    // returns a list of all moves a warrior has
+    private List<Move> getWarriorMoves()
+    {
+        Move move1 = new Move("Human Shield", "Physical", null,
+                "Defend a teammate from the next attack(Always goes first)", null);
+        Move move2 = new Move("Staggering Slash", "Physical", null,
+                "Chance to stun target for 1 turn. Empties Rage bar.", null);
+        Move move3 = new Move("Hard Body", "Physical", null,
+                 "Increases Resistance for 3 turns(Does not stack)", null);
+
+        List<Move> moves = new ArrayList<Move>();
+        moves.add(move1);
+        moves.add(move2);
+        moves.add(move3);
+
+        return moves;
+    }
+
+    // returns an object of type stats with the default warrior stats
+    private Stat getWarriorStats()
+    {
+        return new Stat
+                (20,    // Health
+                18,     // Strength
+                6,      // Intelligence
+                8,      // Agility
+                6,      // Charisma
+                14);    // Resistance
+    }
+
     @Override
     // returns the list of status effects to be applied as is
     protected List<Character> checkAppliedStatusEffects(List<Character> effects) {
