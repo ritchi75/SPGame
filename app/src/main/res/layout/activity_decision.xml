@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#101010"
+    android:orientation="vertical"
+    tools:context="seniorproject.game.DecisionActivity"
+    android:weightSum="1">
+
+    <!-- Relay Box -->
+    <TextView
+        android:id="@+id/relay_box"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="#ff0000"
+        android:text="@string/relay_text"/>
+
+    <!-- Stage -->
+    <ImageView
+        android:id="@+id/stage"
+        android:layout_width="350dp"
+        android:layout_height="250dp"
+        android:contentDescription="stage view"
+        android:drawableEnd="" />
+
+    <!-- Action Box -->
+    <TableLayout
+        android:id="@+id/action_box"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="8dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:stretchColumns="*"
+        android:layout_gravity="center">
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <Button
+                android:id="@+id/button1"
+                android:text="Button 1"/>
+
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <Button
+                android:id="@+id/button4"
+                android:text="Button 2" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>
