@@ -21,4 +21,9 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
 
+    <string name="button1">Attack</string>
+    <string name="button2">Ability</string>
+    <string name="button3">End Turn</string>
+    <string name="button4">Defend</string>
+
 </resources>
