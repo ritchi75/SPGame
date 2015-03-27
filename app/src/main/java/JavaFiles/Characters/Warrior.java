@@ -1,10 +1,12 @@
 package JavaFiles.Characters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import JavaFiles.*;
 import JavaFiles.Character;
+import JavaFiles.StatusEffects.HumanShield_StatusEffect;
 
 /**
  * Created by AlexC on 3/26/2015.
@@ -25,7 +27,7 @@ public class Warrior extends JavaFiles.Character {
     private List<Move> getWarriorMoves()
     {
         Move move1 = new Move("Human Shield", "Physical", null,
-                "Defend a teammate from the next attack(Always goes first)", null);
+                "Defend a teammate from the next attack(Always goes first)", new Effect(0, new ArrayList<Character>(Arrays.asList(new Character[] {new HumanShield_StatusEffect()}))));
         Move move2 = new Move("Staggering Slash", "Physical", null,
                 "Chance to stun target for 1 turn. Empties Rage bar.", null);
         Move move3 = new Move("Hard Body", "Physical", null,

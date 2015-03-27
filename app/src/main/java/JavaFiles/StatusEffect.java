@@ -7,7 +7,7 @@ import JavaFiles.Characters.MoveResult;
 /**
  * Created by AlexC on 3/26/2015.
  */
-public class StatusEffect extends Character {
+public abstract class StatusEffect extends Character {
     private Character character;
     private int turnsRemaining;
 
@@ -23,18 +23,50 @@ public class StatusEffect extends Character {
         return this;
     }
 
+    // Set the amount of turns remaining of this status effect
+    public void setTurnsRemaining(int turnsRemaining)
+    {
+        this.turnsRemaining = turnsRemaining;
+    }
+
     @Override
+    // check if this status effect is on the list to be applied, if so remove it
+    // then check the character contained within this object
     protected List<Character> checkAppliedStatusEffects(List<Character> effects) {
-        return null;
+        // attempt to remove this status effect from the list to be applied
+        // if this is not in the list, then this call does nothing
+        effects.remove(this);
+
+        // check for any more status effects within the character object stored in this class
+        return this.character.checkAppliedStatusEffects(effects);
     }
 
     @Override
-    public MoveResult hitByEffect(Effect effect) {
-        return null;
-    }
+    public abstract MoveResult hitByEffect(Effect effect);
 
     @Override
+    // Applies the list of status effects to this character
     public Character applyStatusEffects(List<Character> effects) {
-        return null;
+        // set up a result to store our new character objects
+        // initially, set it to this character for if we don't need to make changes
+        Character resultingCharacter = this;
+
+        // check if we have any effects left to apply
+        if(effects.size() > 0) {
+            // if so, apply one and call the applyStatusEffects method on the resulting Character object
+            resultingCharacter = ((StatusEffect) effects.get(0)).setCharacter(this);
+        }
+        else if(effects.size() > 1){
+            // if we have at least one more status effect to apply, apply it on the resulting object which we
+            // have already modified from before
+            return resultingCharacter.applyStatusEffects(effects.subList(1,effects.size()));
+        }
+        else {
+            // otherwise we are done so return our resulting character
+            // which will be wrapped once if we had 1 change, or this if we had 0 changes to make
+            return resultingCharacter;
+        }
+        // make the compiler happy =)
+        return resultingCharacter;
     }
 }
