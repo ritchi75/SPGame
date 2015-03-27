@@ -35,9 +35,10 @@
     <!-- Stage -->
     <ImageView
         android:id="@+id/stage"
-        android:layout_width="350dp"
-        android:layout_height="250dp"
-        android:contentDescription="stage view"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="stage view"
+        android:/>
 
     <!-- Player Health -->
     <TextView
@@ -64,24 +65,17 @@
             android:layout_marginBottom="-12dp"
             android:padding="5dip" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height = "wrap_content"
-                android:id="@+id/button1"/>
+            <Button
+                android:id="@+id/button1"
+                android:textSize="14dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:text="@string/button1" />
 
             <Button
                 android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height = "wrap_content"
                 android:textSize="14dp"
-                android:text="Abilities" />
-
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="wrap_content"
-                android:layout_height = "wrap_content"
-                android:textSize="14dp"
-                android:text="Attack" />
+                android:text="@string/button2" />
 
         </TableRow>
         <TableRow
@@ -91,26 +85,16 @@
             android:padding="5dip" >
 
             <Button
+                android:id="@+id/button3"
+                android:textSize="14dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:text="@string/button3" />
+
+            <Button
                 android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height = "wrap_content"
                 android:textSize="14dp"
-                android:layout_marginRight="70dp"
-                android:text="End Turn" />
-
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height = "wrap_content"
-                android:textSize="14dp"
-                android:text="Items" />
-
-            <Button
-                android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height = "wrap_content"
-                android:textSize="14dp"
-                android:text="Defend" />
+                android:text="@string/button4" />
 
         </TableRow>
 
