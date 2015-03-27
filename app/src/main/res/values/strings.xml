@@ -3,12 +3,12 @@
 
     <string name="app_name">AdventurePals</string>
     <string name="action_settings">Settings</string>
-    <string name="title">Click on join to bring up a list of paired devices.
-    If the target device is not on the paired device list it needs to be paired.
-    You can pair a device in either the phone settings or clicking the discover devices button with one device,
-    then clicking join with the other.  Note that both devices need to hit join and choose the others device to connect.</string>
-    <string name="host">discover devices</string>
-    <string name="join">join</string>
+    <string name="connectTitle">Click on connect for a list of nearby devices.</string>
+    <string name="connectTitle1">Once both players have selected each other the game will begin.</string>
+    <string name="discoverTitle">If the device is not on the list select find devices.</string>
+    <string name="discoverTitle1">Your device should appear on the other players join screen.</string>
+    <string name="host">Find Devices</string>
+    <string name="join">Join</string>
     <string name="title_activity_event_ui">EventUI</string>
     <string name="relay_text">Relay Text</string>
 

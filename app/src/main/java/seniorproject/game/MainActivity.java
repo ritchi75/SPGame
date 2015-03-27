@@ -45,6 +45,9 @@ public class MainActivity extends ActionBarActivity {
 
     TextView mainTextView;
     TextView sentMessage;
+    TextView findTextView;
+    TextView textView;
+    TextView title;
     Button host;
     Button join;
     Button sendString;
@@ -162,6 +165,10 @@ public class MainActivity extends ActionBarActivity {
         host = (Button) findViewById(R.id.host);
         join = (Button) findViewById(R.id.join);
         sendString = (Button) findViewById(R.id.sendString);
+        findTextView = (TextView) findViewById(R.id.findTextView);
+        textView = (TextView) findViewById(R.id.textView);
+        title = (TextView) findViewById(R.id.title);
+
         // Initialize the BluetoothChatService to perform bluetooth connections
         mBluetoothService = new BluetoothService(context, mHandler);
         // Initialize the buffer for outgoing messages
@@ -215,7 +222,8 @@ public class MainActivity extends ActionBarActivity {
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                         //Intent intent = new Intent(MainActivity.this, activity_test.class);
                         //startActivity(intent);
-                        sendString.setVisibility(View.VISIBLE);
+                        //We are connected, hide this activity.
+                        startActivity(0, 1);
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
@@ -228,6 +236,38 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     };
+
+    public void startActivity(int fromLayer, int toLayer) {
+        switch(fromLayer) {
+            case 0: //The connect activity
+                mainTextView.setVisibility(View.INVISIBLE);
+                sentMessage.setVisibility(View.INVISIBLE);
+                host.setVisibility(View.INVISIBLE);
+                join.setVisibility(View.INVISIBLE);
+                sendString.setVisibility(View.INVISIBLE);
+                findTextView.setVisibility(View.INVISIBLE);
+                textView.setVisibility(View.INVISIBLE);
+                title.setVisibility(View.INVISIBLE);
+                break;
+            case 1: //The story activity
+                break;
+            case 2: //The boss activity
+                break;
+        }
+        switch(toLayer) {
+            case 0: //The connect activity
+                mainTextView.setVisibility(View.VISIBLE);
+                sentMessage.setVisibility(View.VISIBLE);
+                host.setVisibility(View.VISIBLE);
+                join.setVisibility(View.VISIBLE);
+                sendString.setVisibility(View.VISIBLE);
+                break;
+            case 1: //The story activity
+                break;
+            case 2: //The boss activity
+                break;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -263,11 +303,11 @@ public class MainActivity extends ActionBarActivity {
     private void sendMessage(String message) {
         Log.d(LOG, "sendMessage(" + message + ")");
 
-        // Check that we're actually connected before trying anything
+        /*// Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(getApplicationContext(), "not connected", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
 
         // Check that there's actually something to send
         if (message.length() > 0) {
