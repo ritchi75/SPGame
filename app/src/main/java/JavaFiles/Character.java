@@ -25,6 +25,21 @@ public abstract class Character {
         return this.moves;
     }
 
+    // get a list of all move names useable by this character
+    public List<String> getMoveNames()
+    {
+        List<String> moveNames = new ArrayList<String>();
+
+        // get each move's name
+        for(Move move : moves)
+        {
+            moveNames.add(move.getName());
+        }
+
+        return moveNames;
+
+    }
+
     // get the items in the users inventory
     public List<Item> getItems() {
         return this.inventory;

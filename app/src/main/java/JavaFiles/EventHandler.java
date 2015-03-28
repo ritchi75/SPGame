@@ -11,8 +11,7 @@ import JavaFiles.Characters.MoveResult;
 /**
  * Created by AlexC on 3/12/2015.
  */
-public class EventHandler {
-
+public abstract class EventHandler {
     private List<Character> players;
     private List<Character> enemies;
     private Image backgroundImage;
@@ -28,42 +27,23 @@ public class EventHandler {
 
     // Called by the Event Activity
     // Uses an attack
-    public String useMove(Character user, String moveName, Character target)
+    public abstract String useMove(Character user, String moveName, String targetName);
+
+    // finds the target matching the given name in our list of enemies
+    private Character findTargetByName(String targetName)
     {
-        // figure out which move was used
-        Move moveUsed = user.findMoveByName(moveName);
-        // get the effect of the used move
-        Effect moveEffect = moveUsed.getEffect();
-
-        // apply the move
-        // returns a list with the damage in the first index and the names of any status effects applied afterwards
-        MoveResult moveResult = target.hitByEffect(moveEffect);
-        // unpack the message from the MoveResult
-        List<String> moveResultMessage = moveResult.getResultMessage();
-        //un pack the resulting character from the MoveResult
-        // and save its reference to overwrite the current target
-        target = moveResult.getResultCharacter();
-
-        // break down our result to a single, formatted string
-        String result = user.getName() + " used " + moveName + " against " + target.getName();
-        // check if any damage was done and we need to report it
-        if(Integer.parseInt(moveResultMessage.get(0)) != 0) {
-            result += " for " + moveResultMessage.get(0) + " damage ";
-        }
-        // check if any status effects were applied and we need to report them
-        if(moveResultMessage.size() > 1)
+        for(Character character : enemies)
         {
-            result += " which inflicted: ";
-            // add names of all status effects used from the rest of the list, skipping the first slot
-            // which contains the damage
-            for(String effectName : moveResultMessage.subList(1,moveResultMessage.size() - 1))
-            {
-                result += effectName;
-                result += " ";
-            }
+            if(character.getName().equals(targetName))
+                return character;
         }
 
+        return null;
+    }
 
-        return result;
+    // returns the list of enemies
+    public List<Character> getEnemies()
+    {
+        return this.enemies;
     }
 }
