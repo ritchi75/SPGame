@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import JavaFiles.*;
+import JavaFiles.Characters.Warrior;
 
 
 public class EventUI extends ActionBarActivity {
@@ -21,7 +22,7 @@ public class EventUI extends ActionBarActivity {
     String moveSelected;
     ArrayList<String> playerNames;
     ArrayList<String> enemyNames;
-    ArrayList<String> moveNames;
+    List<String> moveNames;
     JavaFiles.Character user;
     JavaFiles.EventHandler handler;
 
@@ -36,7 +37,11 @@ public class EventUI extends ActionBarActivity {
 
         playerNames = new ArrayList<>();
         enemyNames = new ArrayList<>();
-        //moveNames = user.getMoveNames();
+        //user = new Warrior();
+        moveNames = user.getMoveNames();
+        //enemyNames.add("lol");
+        //playerNames.add("p1");
+        //playerNames.add("p2");
 
         // View variables
         final TextView relayText = (TextView) findViewById(R.id.relay_box);
@@ -48,43 +53,44 @@ public class EventUI extends ActionBarActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // performAction()
+
                 String currentText = ((TextView)v).getText().toString();
 
                 // Attack
                 if(currentText.equals("Attack")){
-                    // loadTargets()
+                    moveSelected = "Attack";
+                    loadTargets();
                 }
                 else if(moveNames.contains(currentText)){
-                    loadTargets();
                     moveSelected = currentText;
+                    loadTargets();
                 }
                 else{
-                    currentText = targetName;
+                    targetName = currentText;
                     loadDefaultButtons();
+                    // Activate button color
                 }
-
-                relayText.setText("You've clicked Button 1");
             }
         });
 
         Button button2 = (Button)findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // performAction()
+
                 String currentText = ((TextView)v).getText().toString();
 
                 // Ability
                 if(currentText.equals("Ability")){
-                    // loadAbilities()
+                    loadAbilities();
                 }
                 else if(moveNames.contains(currentText)){
-                    loadTargets();
                     moveSelected = currentText;
+                    loadTargets();
                 }
                 else{
-                    currentText = targetName;
+                    targetName = currentText;
                     loadDefaultButtons();
+                    // Activate button color
                 }
             }
         });
@@ -92,27 +98,29 @@ public class EventUI extends ActionBarActivity {
         Button button3 = (Button)findViewById(R.id.button3);
         button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // performAction()
+
                 String currentText = ((TextView)v).getText().toString();
 
                 // End Turn
                 if(currentText.equals("End Turn")){
                     if(moveSelected != null && targetName != null){
-                        //relayText.setText(handler.useMove(user,moveSelected,targetName));
+                        relayText.setText(handler.useMove(user,moveSelected,targetName));
                         moveSelected = null;
                         targetName = null;
                     }
                     else{
                         relayText.setText("Please select a move.");
+                        // Grey out button
                     }
                 }
                 else if(moveNames.contains(currentText)){
-                    loadTargets();
                     moveSelected = currentText;
+                    loadTargets();
                 }
                 else{
-                    currentText = targetName;
+                    targetName = currentText;
                     loadDefaultButtons();
+                    // Activate button color
                 }
             }
         });
@@ -129,14 +137,14 @@ public class EventUI extends ActionBarActivity {
                     targetName = "Not Null";
                 }
                 else if(moveNames.contains(currentText)){
-                    loadTargets();
                     moveSelected = currentText;
+                    loadTargets();
                 }
                 else{
-                    currentText = targetName;
+                    targetName = currentText;
                     loadDefaultButtons();
+                    // Activate button color
                 }
-                relayText.setText("You've clicked Button 4");
             }
         });
     }
@@ -231,22 +239,37 @@ public class EventUI extends ActionBarActivity {
 
         // loop through all enemy names for button text
         int i = 0;
-        for(; i < enemyNames.size() - 1; i ++)
+        for(; i < enemyNames.size(); i ++)
         {
             buttons.get(i).setText(enemyNames.get(0));
         }
 
         // loop through all friendly names for button text
-        for(; i < playerNames.size() - 1; i++)
+        for(int j = 0; j < playerNames.size(); j++)
         {
-            buttons.get(i).setText(playerNames.get(i - enemyNames.size()));
+            buttons.get(i).setText(playerNames.get(j));
+            i++;
         }
 
         // check if all buttons were wiped of text
-         for(i = enemyNames.size() - 1; i < buttons.size(); i++)
+         for(; i < buttons.size(); i++)
          {
                 buttons.get(i).setText("");
          }
+    }
+
+    // sets the text in the four buttons to the ability names for the character
+    private void loadAbilities()
+    {
+        // get a list of all the buttons
+        List<Button> buttons = getButtonList();
+
+        // loop through all buttons and set the text
+        for(int i = 0; i < buttons.size(); i++)
+        {
+            if(i < moveNames.size())
+                buttons.get(i).setText(moveNames.get(i));
+        }
     }
 
     // loads the default text back into the four buttons

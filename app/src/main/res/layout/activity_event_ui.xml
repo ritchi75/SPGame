@@ -35,10 +35,12 @@
     <!-- Stage -->
     <ImageView
         android:id="@+id/stage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="355dp"
+        android:layout_height="254dp"
         android:contentDescription="stage view"
-        android:/>
+        android:src="@drawable/ic_launcher"
+        android:scaleType="fitXY"
+        android:layout_weight="0.15" />
 
     <!-- Player Health -->
     <TextView
