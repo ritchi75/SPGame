@@ -15,19 +15,23 @@ import java.util.List;
 import JavaFiles.*;
 import JavaFiles.Characters.Warrior;
 
-
+/**
+ * The EventUI Activity controls the activity_event_ui XML layout.
+ * It's main task is to provide functionality for users while engaged in an event,
+ * encounter, or boss fight.
+ */
 public class EventUI extends ActionBarActivity {
 
-    String targetName;
-    String moveSelected;
-    ArrayList<String> playerNames;
-    ArrayList<String> enemyNames;
-    List<String> moveNames;
-    JavaFiles.Character user;
-    JavaFiles.EventHandler handler;
+    private String targetName;
+    private String moveSelected;
+    private ArrayList<String> playerNames;
+    private ArrayList<String> enemyNames;
+    private List<String> moveNames;
+    private JavaFiles.Character user;
+    private JavaFiles.EventHandler handler;
 
     /**
-     *
+     * Android Activity default method. Adds functionality to XML layout.
      * @param savedInstanceState
      */
     @Override
@@ -35,6 +39,7 @@ public class EventUI extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_ui);
 
+        // Initialize Fields
         playerNames = new ArrayList<>();
         enemyNames = new ArrayList<>();
         //user = new Warrior();
@@ -43,28 +48,37 @@ public class EventUI extends ActionBarActivity {
         //playerNames.add("p1");
         //playerNames.add("p2");
 
-        // View variables
+        // Text to be displayed in the relay_box at the top of the screen.
         final TextView relayText = (TextView) findViewById(R.id.relay_box);
 
 
-
-        // Capture buttons from layout
+        /**
+         * Button 1 is used for:
+         *   Event         Attack action
+         *   Event         Target option
+         *   Event         Ability option
+         *   Start Screen  Host action
+         *   Story         First option
+         *
+         */
         Button button1 = (Button)findViewById(R.id.button1);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // Get button text
                 String currentText = ((TextView)v).getText().toString();
 
-                // Attack
+                // Attack action - click to choose
                 if(currentText.equals("Attack")){
                     moveSelected = "Attack";
                     loadTargets();
                 }
+                // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
                     loadTargets();
                 }
+                // Target option - click to choose
                 else{
                     targetName = currentText;
                     loadDefaultButtons();
@@ -73,20 +87,31 @@ public class EventUI extends ActionBarActivity {
             }
         });
 
+        /**
+         * Button 2 is used for:
+         *   Event         Ability action
+         *   Event         Target option
+         *   Event         Ability option
+         *   Start Screen  Join action
+         *   Story         Second option
+         *
+         */
         Button button2 = (Button)findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                // Get button text
                 String currentText = ((TextView)v).getText().toString();
 
-                // Ability
+                // Ability action - click to choose
                 if(currentText.equals("Ability")){
                     loadAbilities();
                 }
+                // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
                     loadTargets();
                 }
+                // Target option - click to choose
                 else{
                     targetName = currentText;
                     loadDefaultButtons();
@@ -95,13 +120,20 @@ public class EventUI extends ActionBarActivity {
             }
         });
 
+        /**
+         * Button 3 is used for:
+         *   Event         End Turn action
+         *   Event         Target option
+         *   Event         Ability option
+         *
+         */
         Button button3 = (Button)findViewById(R.id.button3);
         button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                // Get button text
                 String currentText = ((TextView)v).getText().toString();
 
-                // End Turn
+                // End Turn - ends turn so that the action chosen may be performed
                 if(currentText.equals("End Turn")){
                     if(moveSelected != null && targetName != null){
                         relayText.setText(handler.useMove(user,moveSelected,targetName));
@@ -113,10 +145,12 @@ public class EventUI extends ActionBarActivity {
                         // Grey out button
                     }
                 }
+                // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
                     loadTargets();
                 }
+                // Target option - click to choose
                 else{
                     targetName = currentText;
                     loadDefaultButtons();
@@ -125,21 +159,30 @@ public class EventUI extends ActionBarActivity {
             }
         });
 
+        /**
+         * Button 4 is used for:
+         *   Event         Defend action
+         *   Event         Target option
+         *   Event         Ability option
+         *
+         */
         Button button4 = (Button)findViewById(R.id.button4);
         button4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                // Get button text
                 String currentText = ((TextView)v).getText().toString();
 
-                // Defend
+                // Defend - click to choose
                 if(currentText.equals("Defend")){
                     moveSelected = "Defend";
                     targetName = "Not Null";
                 }
+                // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
                     loadTargets();
                 }
+                // Target option - click to choose
                 else{
                     targetName = currentText;
                     loadDefaultButtons();
@@ -151,7 +194,7 @@ public class EventUI extends ActionBarActivity {
 
 
     /**
-     *
+     * Android Activity default method
      * @param menu
      * @return
      */
@@ -163,7 +206,7 @@ public class EventUI extends ActionBarActivity {
     }
 
     /**
-     *
+     * Android Activity default method
      * @param item
      * @return
      */
@@ -182,56 +225,25 @@ public class EventUI extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     /**
-     *
+     * Activity controls from superclass
      */
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
+    protected void onStart() { super.onStart(); }
+    @Override
+    protected void onRestart() { super.onRestart(); }
+    @Override
+    protected void onResume() { super.onResume(); }
+    @Override
+    protected void onPause() { super.onPause(); }
+    @Override
+    protected void onStop() { super.onStop(); }
+    @Override
+    protected void onDestroy() { super.onDestroy(); }
 
     /**
-     *
+     * Sets each button to the targets name the list of target names
      */
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    // sets each button to the targets name the list of target names
     private void loadTargets()
     {
         // get a list of the buttons
@@ -258,7 +270,9 @@ public class EventUI extends ActionBarActivity {
          }
     }
 
-    // sets the text in the four buttons to the ability names for the character
+    /**
+     * Sets the text in the four buttons to the ability names for the character
+     */
     private void loadAbilities()
     {
         // get a list of all the buttons
@@ -272,7 +286,9 @@ public class EventUI extends ActionBarActivity {
         }
     }
 
-    // loads the default text back into the four buttons
+    /**
+     * Loads the default text back into the four buttons
+     */
     private void loadDefaultButtons()
     {
         // get a reference to the buttons
@@ -286,7 +302,10 @@ public class EventUI extends ActionBarActivity {
 
     }
 
-    // gets a list of the four buttons we need references to
+    /**
+     * Gets a list of the four buttons we need references to
+     * @return ArrayList of buttons
+     */
     private ArrayList<Button> getButtonList()
     {
         // get a reference to the buttons

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,16 @@ public class MainActivity extends ActionBarActivity {
     TextView findTextView;
     TextView textView;
     TextView title;
+
+    TextView relay_box;
+    TextView enemyHp;
+    TextView playerhp;
+    Button button1;
+    Button button2;
+    Button button3;
+    Button button4;
+    ImageView stage;
+
     Button host;
     Button join;
     Button sendString;
@@ -62,10 +73,10 @@ public class MainActivity extends ActionBarActivity {
             mainTextView.setText("Bluetooth is not supported");
         }
         //If bluetooth is not on request it to be enabled.
-        /*if (!mBluetoothAdapter.isEnabled()) {
+        if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT); //REQUEST_ENABLE_BT is a field.
-        }*/
+        }
         //Otherwise keep connecting
         //  if (mBluetoothService == null){
         setOnClickListeners();
@@ -129,12 +140,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void setOnClickListeners() {
         Log.d("MATT", "setOnClickListeners()");
-        host.setOnClickListener(new View.OnClickListener() { //The variable name is misleading, make the current device discoverable.
+        button1.setOnClickListener(new View.OnClickListener() { //The variable name is misleading, make the current device discoverable.
             public void onClick(View v) {
                 makeDiscoverable();
             }
         });
-        join.setOnClickListener(new View.OnClickListener(){ //Call an intent to bring up a listView of paired devices.
+        button2.setOnClickListener(new View.OnClickListener(){ //Call an intent to bring up a listView of paired devices.
             public void onClick(View v) { //Open list of devices
                 Intent serverIntent = new Intent(context, DeviceListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
@@ -160,6 +171,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void init() {
+        //Connect Activity
         mainTextView = (TextView) findViewById(R.id.mainTextView);
         sentMessage = (TextView) findViewById(R.id.sentMessage);
         host = (Button) findViewById(R.id.host);
@@ -168,6 +180,16 @@ public class MainActivity extends ActionBarActivity {
         findTextView = (TextView) findViewById(R.id.findTextView);
         textView = (TextView) findViewById(R.id.textView);
         title = (TextView) findViewById(R.id.title);
+
+        //Event UI
+        relay_box = (TextView) findViewById(R.id.relay_box);
+        enemyHp = (TextView) findViewById(R.id.enemyhp);
+        playerhp = (TextView) findViewById(R.id.playerhp);
+        button1 = (Button) findViewById(R.id.button1); //host
+        button2 = (Button) findViewById(R.id.button2); //join
+        button3 = (Button) findViewById(R.id.button3);
+        button4 = (Button) findViewById(R.id.button4);
+        stage = (ImageView) findViewById(R.id.stage);
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mBluetoothService = new BluetoothService(context, mHandler);
@@ -223,7 +245,7 @@ public class MainActivity extends ActionBarActivity {
                         //Intent intent = new Intent(MainActivity.this, activity_test.class);
                         //startActivity(intent);
                         //We are connected, hide this activity.
-                        startActivity(0, 1);
+                        startActivity(1);
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
@@ -237,34 +259,36 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    public void startActivity(int fromLayer, int toLayer) {
-        switch(fromLayer) {
-            case 0: //The connect activity
-                mainTextView.setVisibility(View.INVISIBLE);
-                sentMessage.setVisibility(View.INVISIBLE);
-                host.setVisibility(View.INVISIBLE);
-                join.setVisibility(View.INVISIBLE);
-                sendString.setVisibility(View.INVISIBLE);
-                findTextView.setVisibility(View.INVISIBLE);
-                textView.setVisibility(View.INVISIBLE);
-                title.setVisibility(View.INVISIBLE);
-                break;
-            case 1: //The story activity
-                break;
-            case 2: //The boss activity
-                break;
-        }
+    public void startActivity(int toLayer) {
+        relay_box.setVisibility(View.GONE);
+        enemyHp.setVisibility(View.GONE);
+        playerhp.setVisibility(View.GONE);
+        button1.setVisibility(View.GONE);
+        button2.setVisibility(View.GONE);
+        button3.setVisibility(View.GONE);
+        button4.setVisibility(View.GONE);
+        stage.setVisibility(View.GONE);
         switch(toLayer) {
             case 0: //The connect activity
-                mainTextView.setVisibility(View.VISIBLE);
-                sentMessage.setVisibility(View.VISIBLE);
-                host.setVisibility(View.VISIBLE);
-                join.setVisibility(View.VISIBLE);
-                sendString.setVisibility(View.VISIBLE);
+                relay_box.setVisibility(View.VISIBLE); //"ADVENTURE PALS"
+                button1.setVisibility(View.VISIBLE); //"Find Devices"
+                button2.setVisibility(View.VISIBLE); //"Join Devices"
                 break;
             case 1: //The story activity
+                relay_box.setVisibility(View.VISIBLE); //"Title"
+                stage.setVisibility(View.VISIBLE); //The stage
+                button1.setVisibility(View.VISIBLE); //Choice 1
+                button2.setVisibility(View.VISIBLE); //Choice 2
                 break;
             case 2: //The boss activity
+                relay_box.setVisibility(View.VISIBLE);
+                enemyHp.setVisibility(View.VISIBLE);
+                playerhp.setVisibility(View.VISIBLE);
+                button1.setVisibility(View.VISIBLE);
+                button2.setVisibility(View.VISIBLE);
+                button3.setVisibility(View.VISIBLE);
+                button4.setVisibility(View.VISIBLE);
+                stage.setVisibility(View.VISIBLE);
                 break;
         }
     }
