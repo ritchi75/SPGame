@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import JavaFiles.*;
+import JavaFiles.Character;
 import JavaFiles.Characters.Warrior;
 
 /**
@@ -40,13 +41,15 @@ public class EventUI extends ActionBarActivity {
         setContentView(R.layout.activity_event_ui);
 
         // Initialize Fields
-        playerNames = new ArrayList<>();
-        enemyNames = new ArrayList<>();
-        //user = new Warrior();
+        List<Character> players = new ArrayList<>();
+        List<Character> enemies = new ArrayList<>();
+        players.add(new Warrior());
+        enemies.add(new Warrior());
+        handler = new HostEventHandler(players,enemies,null);
+        playerNames = handler.getPlayerNames();
+        enemyNames = handler.getEnemyNames();
+        user = players.get(0);
         moveNames = user.getMoveNames();
-        //enemyNames.add("lol");
-        //playerNames.add("p1");
-        //playerNames.add("p2");
 
         // Text to be displayed in the relay_box at the top of the screen.
         final TextView relayText = (TextView) findViewById(R.id.relay_box);
