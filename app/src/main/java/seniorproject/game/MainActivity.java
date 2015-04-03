@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
     private BluetoothService mBluetoothService = null;
     private String mConnectedDeviceName = null;
 
+
     TextView mainTextView;
     TextView sentMessage;
     TextView findTextView;
@@ -57,7 +59,10 @@ public class MainActivity extends ActionBarActivity {
     Button button2;
     Button button3;
     Button button4;
-    ImageView stage;
+    SurfaceView stage;
+
+    int layer = 0;
+    private String messageRead;
 
     Button host;
     Button join;
@@ -66,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_event_ui);
         init();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -80,9 +85,186 @@ public class MainActivity extends ActionBarActivity {
         //Otherwise keep connecting
         //  if (mBluetoothService == null){
         setOnClickListeners();
+        startActivity(0);
         // Intent intent = new Intent(MainActivity.this, activity_test.class);
         // startActivity(intent);
         //  }
+    }
+
+    public void setOnClickListeners() {
+        Log.d("MATT", "setOnClickListeners()");
+        button1.setOnClickListener(new View.OnClickListener() { //The variable name is misleading, make the current device discoverable.
+            public void onClick(View v) {
+                switch(layer) {
+                    case 0: //find devices
+                        makeDiscoverable();
+                        break;
+                    case 1: //Story point 1
+                        Log.d(LOG, messageRead);
+                        sendMessage("STORYPOINT1"); //Tell other device you chose an option.
+                        if (messageRead.equals("STORYPOINT1")){ //Did you read in a message(did the other player pick?)
+                            messageRead = "";
+                            startActivity(1); //Start event Activity
+                        }
+                        else if(messageRead.equals("STORYPOINT2")){ //You both disagree, just start the first option.
+                            messageRead = "";
+                            startActivity(1);
+                        }
+                        break;
+                    case 2: //Attack
+                        break;
+                }
+            }
+        });
+        button2.setOnClickListener(new View.OnClickListener(){ //Call an intent to bring up a listView of paired devices.
+            public void onClick(View v) {
+                switch (layer) {
+                    case 0: //Join
+                        Intent serverIntent = new Intent(context, DeviceListActivity.class);
+                        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+                        //startActivity(1);
+                        break;
+                    case 1: //Story point 2
+                        //Log.d(LOG, messageRead);
+                        sendMessage("STORYPOINT2"); //Tell other device you chose an option.
+                        if (messageRead.equals("STORYPOINT2")){ //Did you read in a message(did the other player pick?){
+                            messageRead = "";
+                            startActivity(1); //Start event Activity
+                        }
+                        else if(messageRead.equals("STORYPOINT1")){
+                            messageRead = "";
+                            startActivity(1);
+                        }
+                        //startActivity(2);
+                        break;
+                    case 2: //Ability
+                        break;
+                }
+
+            }
+        });
+        button3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //End turn
+            }
+        });
+        button4.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //Defend
+            }
+        });
+    /*    sendString.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Matt", "TEST");
+                sendMessage("Hello World!");
+            }
+        });*/
+    }
+
+    public void init() {
+        //Connect Activity
+       /* mainTextView = (TextView) findViewById(R.id.mainTextView);
+        sentMessage = (TextView) findViewById(R.id.sentMessage);
+        host = (Button) findViewById(R.id.host);
+        join = (Button) findViewById(R.id.join);
+        sendString = (Button) findViewById(R.id.sendString);
+        findTextView = (TextView) findViewById(R.id.findTextView);
+        textView = (TextView) findViewById(R.id.textView);
+        title = (TextView) findViewById(R.id.title);*/
+
+        //Event UI
+        relay_box = (TextView) findViewById(R.id.relay_box);
+        enemyHp = (TextView) findViewById(R.id.enemyhp);
+        playerhp = (TextView) findViewById(R.id.playerhp);
+        button1 = (Button) findViewById(R.id.button1); //host
+        button2 = (Button) findViewById(R.id.button2); //join
+        button3 = (Button) findViewById(R.id.button3);
+        button4 = (Button) findViewById(R.id.button4);
+        stage = (SurfaceView) findViewById(R.id.stage);
+
+        // Initialize the BluetoothChatService to perform bluetooth connections
+        mBluetoothService = new BluetoothService(context, mHandler);
+        // Initialize the buffer for outgoing messages
+        mOutStringBuffer = new StringBuffer("");
+        context = this;
+    }
+
+    public void startActivity(int toLayer) {
+        relay_box.setVisibility(View.GONE);
+        enemyHp.setVisibility(View.GONE);
+        playerhp.setVisibility(View.GONE);
+        button1.setVisibility(View.GONE);
+        button2.setVisibility(View.GONE);
+        button3.setVisibility(View.GONE);
+        button4.setVisibility(View.GONE);
+        stage.setVisibility(View.GONE);
+        layer = toLayer;
+        switch(toLayer) {
+            case 0: //The connect activity
+                relay_box.setVisibility(View.VISIBLE); //"ADVENTURE PALS"
+                button1.setVisibility(View.VISIBLE); //"Find Devices"
+                button1.setText("Find Devices");
+                button2.setVisibility(View.VISIBLE); //"Join Devices"
+                button2.setText("Join");
+                break;
+            case 1: //The story activity
+                relay_box.setVisibility(View.VISIBLE); //"Title"
+                stage.setVisibility(View.VISIBLE); //The stage
+                button1.setVisibility(View.VISIBLE); //Choice 1
+                button1.setText("Choice 1");
+                button2.setVisibility(View.VISIBLE); //Choice 2
+                button2.setText("Choice 2");
+                startStoryActivity();
+                break;
+            case 2: //The boss activity
+                relay_box.setVisibility(View.VISIBLE);
+                enemyHp.setVisibility(View.VISIBLE);
+                playerhp.setVisibility(View.VISIBLE);
+                button1.setVisibility(View.VISIBLE);
+                button1.setText("ATTACK");
+                button2.setVisibility(View.VISIBLE);
+                button2.setText("ABILITY");
+                button3.setVisibility(View.VISIBLE);
+                button3.setText("END TURN");
+                button4.setVisibility(View.VISIBLE);
+                button4.setText("DEFEND");
+                stage.setVisibility(View.VISIBLE);
+                startBossActivity();
+                break;
+        }
+    }
+
+    public void startStoryActivity() {
+        relay_box.setText("TITLE");
+
+    }
+
+    public void startBossActivity() {
+
+    }
+
+    //<------------------------------BLUETOOTH STUFF PAST THIS LINE------------------------------>
+
+    private void sendMessage(String message) {
+        Log.d(LOG, "sendMessage(" + message + ")");
+
+        /*// Check that we're actually connected before trying anything
+        if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
+            Toast.makeText(getApplicationContext(), "not connected", Toast.LENGTH_SHORT).show();
+            return;
+        }*/
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            mBluetoothService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            //mOutEditText.setText(mOutStringBuffer);
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) { //Seems to only be called from the list adapter
@@ -138,27 +320,7 @@ public class MainActivity extends ActionBarActivity {
         mBluetoothService.connect(device, secure);
     }
 
-    public void setOnClickListeners() {
-        Log.d("MATT", "setOnClickListeners()");
-        button1.setOnClickListener(new View.OnClickListener() { //The variable name is misleading, make the current device discoverable.
-            public void onClick(View v) {
-                makeDiscoverable();
-            }
-        });
-        button2.setOnClickListener(new View.OnClickListener(){ //Call an intent to bring up a listView of paired devices.
-            public void onClick(View v) { //Open list of devices
-                Intent serverIntent = new Intent(context, DeviceListActivity.class);
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
-            }
-        });
-        sendString.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Matt", "TEST");
-                sendMessage("Hello World!");
-            }
-        });
-    }
+
 
     private void makeDiscoverable() {
         Log.d(LOG, "ensureDiscoverable()");
@@ -170,33 +332,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void init() {
-        //Connect Activity
-        mainTextView = (TextView) findViewById(R.id.mainTextView);
-        sentMessage = (TextView) findViewById(R.id.sentMessage);
-        host = (Button) findViewById(R.id.host);
-        join = (Button) findViewById(R.id.join);
-        sendString = (Button) findViewById(R.id.sendString);
-        findTextView = (TextView) findViewById(R.id.findTextView);
-        textView = (TextView) findViewById(R.id.textView);
-        title = (TextView) findViewById(R.id.title);
 
-        //Event UI
-        relay_box = (TextView) findViewById(R.id.relay_box);
-        enemyHp = (TextView) findViewById(R.id.enemyhp);
-        playerhp = (TextView) findViewById(R.id.playerhp);
-        button1 = (Button) findViewById(R.id.button1); //host
-        button2 = (Button) findViewById(R.id.button2); //join
-        button3 = (Button) findViewById(R.id.button3);
-        button4 = (Button) findViewById(R.id.button4);
-        stage = (ImageView) findViewById(R.id.stage);
-
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        mBluetoothService = new BluetoothService(context, mHandler);
-        // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer("");
-        context = this;
-    }
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -232,6 +368,7 @@ public class MainActivity extends ActionBarActivity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     sentMessage.setText(readMessage); // Temporary
+                    messageRead = readMessage;
                     Toast.makeText(context, "Received: " + readMessage, Toast.LENGTH_SHORT);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -245,7 +382,7 @@ public class MainActivity extends ActionBarActivity {
                         //Intent intent = new Intent(MainActivity.this, activity_test.class);
                         //startActivity(intent);
                         //We are connected, hide this activity.
-                        startActivity(1);
+                        startActivity(1);                                       //<--START-ACTIVITY-->
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
@@ -259,39 +396,7 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    public void startActivity(int toLayer) {
-        relay_box.setVisibility(View.GONE);
-        enemyHp.setVisibility(View.GONE);
-        playerhp.setVisibility(View.GONE);
-        button1.setVisibility(View.GONE);
-        button2.setVisibility(View.GONE);
-        button3.setVisibility(View.GONE);
-        button4.setVisibility(View.GONE);
-        stage.setVisibility(View.GONE);
-        switch(toLayer) {
-            case 0: //The connect activity
-                relay_box.setVisibility(View.VISIBLE); //"ADVENTURE PALS"
-                button1.setVisibility(View.VISIBLE); //"Find Devices"
-                button2.setVisibility(View.VISIBLE); //"Join Devices"
-                break;
-            case 1: //The story activity
-                relay_box.setVisibility(View.VISIBLE); //"Title"
-                stage.setVisibility(View.VISIBLE); //The stage
-                button1.setVisibility(View.VISIBLE); //Choice 1
-                button2.setVisibility(View.VISIBLE); //Choice 2
-                break;
-            case 2: //The boss activity
-                relay_box.setVisibility(View.VISIBLE);
-                enemyHp.setVisibility(View.VISIBLE);
-                playerhp.setVisibility(View.VISIBLE);
-                button1.setVisibility(View.VISIBLE);
-                button2.setVisibility(View.VISIBLE);
-                button3.setVisibility(View.VISIBLE);
-                button4.setVisibility(View.VISIBLE);
-                stage.setVisibility(View.VISIBLE);
-                break;
-        }
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -316,32 +421,4 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-
-
-
-
-
-
-
-    //DEMO PURPOSES ONLY!
-    private void sendMessage(String message) {
-        Log.d(LOG, "sendMessage(" + message + ")");
-
-        /*// Check that we're actually connected before trying anything
-        if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
-            Toast.makeText(getApplicationContext(), "not connected", Toast.LENGTH_SHORT).show();
-            return;
-        }*/
-
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mBluetoothService.write(send);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            //mOutEditText.setText(mOutStringBuffer);
-        }
-    }
 }

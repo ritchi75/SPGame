@@ -10,6 +10,7 @@
     android:weightSum="1">
 
     <!-- Relay Box -->
+
     <TextView
         android:id="@+id/relay_box"
         android:layout_width="fill_parent"
@@ -32,15 +33,11 @@
         android:textSize="17sp"
         android:textColor="#00ff00"/>
 
-    <!-- Stage -->
-    <ImageView
-        android:id="@+id/stage"
-        android:layout_width="355dp"
-        android:layout_height="254dp"
-        android:contentDescription="stage view"
-        android:src="@drawable/ic_launcher"
-        android:scaleType="fitXY"
-        android:layout_weight="0.15" />
+    <JavaFiles.StageView
+        android:layout_width="wrap_content"
+        android:layout_height="245dp"
+        android:contentDescription=""
+        android:id="@+id/stage" />
 
     <!-- Player Health -->
     <TextView
@@ -103,3 +100,5 @@
     </TableLayout>
 
 </LinearLayout>
+
+

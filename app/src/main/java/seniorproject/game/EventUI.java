@@ -5,7 +5,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -37,12 +40,13 @@ public class EventUI extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_event_ui);
 
         // Initialize Fields
         playerNames = new ArrayList<>();
         enemyNames = new ArrayList<>();
-        //user = new Warrior();
+        user = new Warrior();
         moveNames = user.getMoveNames();
         //enemyNames.add("lol");
         //playerNames.add("p1");
@@ -51,6 +55,8 @@ public class EventUI extends ActionBarActivity {
         // Text to be displayed in the relay_box at the top of the screen.
         final TextView relayText = (TextView) findViewById(R.id.relay_box);
 
+        // The stage in which to draw to.
+        // SurfaceView stageView = (SurfaceView) findViewById(R.id.stage);
 
         /**
          * Button 1 is used for:
@@ -71,17 +77,17 @@ public class EventUI extends ActionBarActivity {
                 // Attack action - click to choose
                 if(currentText.equals("Attack")){
                     moveSelected = "Attack";
-                    loadTargets();
+                    //loadTargets();
                 }
                 // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
-                    loadTargets();
+                    //loadTargets();
                 }
                 // Target option - click to choose
                 else{
                     targetName = currentText;
-                    loadDefaultButtons();
+                    //loadDefaultButtons();
                     // Activate button color
                 }
             }
@@ -104,17 +110,17 @@ public class EventUI extends ActionBarActivity {
 
                 // Ability action - click to choose
                 if(currentText.equals("Ability")){
-                    loadAbilities();
+                    //loadAbilities();
                 }
                 // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
-                    loadTargets();
+                    //loadTargets();
                 }
                 // Target option - click to choose
                 else{
                     targetName = currentText;
-                    loadDefaultButtons();
+                    //loadDefaultButtons();
                     // Activate button color
                 }
             }
@@ -148,12 +154,12 @@ public class EventUI extends ActionBarActivity {
                 // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
-                    loadTargets();
+                    //loadTargets();
                 }
                 // Target option - click to choose
                 else{
                     targetName = currentText;
-                    loadDefaultButtons();
+                    //loadDefaultButtons();
                     // Activate button color
                 }
             }
@@ -180,12 +186,12 @@ public class EventUI extends ActionBarActivity {
                 // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
                     moveSelected = currentText;
-                    loadTargets();
+                    //loadTargets();
                 }
                 // Target option - click to choose
                 else{
                     targetName = currentText;
-                    loadDefaultButtons();
+                    //loadDefaultButtons();
                     // Activate button color
                 }
             }
@@ -244,83 +250,83 @@ public class EventUI extends ActionBarActivity {
     /**
      * Sets each button to the targets name the list of target names
      */
-    private void loadTargets()
-    {
-        // get a list of the buttons
-        ArrayList<Button> buttons = getButtonList();
-
-        // loop through all enemy names for button text
-        int i = 0;
-        for(; i < enemyNames.size(); i ++)
-        {
-            buttons.get(i).setText(enemyNames.get(0));
-        }
-
-        // loop through all friendly names for button text
-        for(int j = 0; j < playerNames.size(); j++)
-        {
-            buttons.get(i).setText(playerNames.get(j));
-            i++;
-        }
-
-        // check if all buttons were wiped of text
-         for(; i < buttons.size(); i++)
-         {
-                buttons.get(i).setText("");
-         }
-    }
-
-    /**
-     * Sets the text in the four buttons to the ability names for the character
-     */
-    private void loadAbilities()
-    {
-        // get a list of all the buttons
-        List<Button> buttons = getButtonList();
-
-        // loop through all buttons and set the text
-        for(int i = 0; i < buttons.size(); i++)
-        {
-            if(i < moveNames.size())
-                buttons.get(i).setText(moveNames.get(i));
-        }
-    }
-
-    /**
-     * Loads the default text back into the four buttons
-     */
-    private void loadDefaultButtons()
-    {
-        // get a reference to the buttons
-        ArrayList<Button> buttons = getButtonList();
-
-        // set each default text
-        buttons.get(0).setText("Attack");
-        buttons.get(1).setText("Ability");
-        buttons.get(2).setText("End Turn");
-        buttons.get(3).setText("Defend");
-
-    }
-
-    /**
-     * Gets a list of the four buttons we need references to
-     * @return ArrayList of buttons
-     */
-    private ArrayList<Button> getButtonList()
-    {
-        // get a reference to the buttons
-        Button button1 = (Button)findViewById(R.id.button1);
-        Button button2 = (Button)findViewById(R.id.button2);
-        Button button3 = (Button)findViewById(R.id.button3);
-        Button button4 = (Button)findViewById(R.id.button4);
-
-        // save the buttons to a list
-        ArrayList<Button> buttons = new ArrayList<Button>();
-        buttons.add(button1);
-        buttons.add(button2);
-        buttons.add(button3);
-        buttons.add(button4);
-
-        return buttons;
-    }
+//    private void loadTargets()
+//    {
+//        // get a list of the buttons
+//        ArrayList<Button> buttons = getButtonList();
+//
+//        // loop through all enemy names for button text
+//        int i = 0;
+//        for(; i < enemyNames.size(); i ++)
+//        {
+//            buttons.get(i).setText(enemyNames.get(0));
+//        }
+//
+//        // loop through all friendly names for button text
+//        for(int j = 0; j < playerNames.size(); j++)
+//        {
+//            buttons.get(i).setText(playerNames.get(j));
+//            i++;
+//        }
+//
+//        // check if all buttons were wiped of text
+//         for(; i < buttons.size(); i++)
+//         {
+//                buttons.get(i).setText("");
+//         }
+//    }
+//
+//    /**
+//     * Sets the text in the four buttons to the ability names for the character
+//     */
+//    private void loadAbilities()
+//    {
+//        // get a list of all the buttons
+//        List<Button> buttons = getButtonList();
+//
+//        // loop through all buttons and set the text
+//        for(int i = 0; i < buttons.size(); i++)
+//        {
+//            if(i < moveNames.size())
+//                buttons.get(i).setText(moveNames.get(i));
+//        }
+//    }
+//
+//    /**
+//     * Loads the default text back into the four buttons
+//     */
+//    private void loadDefaultButtons()
+//    {
+//        // get a reference to the buttons
+//        ArrayList<Button> buttons = getButtonList();
+//
+//        // set each default text
+//        buttons.get(0).setText("Attack");
+//        buttons.get(1).setText("Ability");
+//        buttons.get(2).setText("End Turn");
+//        buttons.get(3).setText("Defend");
+//
+//    }
+//
+//    /**
+//     * Gets a list of the four buttons we need references to
+//     * @return ArrayList of buttons
+//     */
+//    private ArrayList<Button> getButtonList()
+//    {
+//        // get a reference to the buttons
+//        Button button1 = (Button)findViewById(R.id.button1);
+//        Button button2 = (Button)findViewById(R.id.button2);
+//        Button button3 = (Button)findViewById(R.id.button3);
+//        Button button4 = (Button)findViewById(R.id.button4);
+//
+//        // save the buttons to a list
+//        ArrayList<Button> buttons = new ArrayList<Button>();
+//        buttons.add(button1);
+//        buttons.add(button2);
+//        buttons.add(button3);
+//        buttons.add(button4);
+//
+//        return buttons;
+//    }
 }
