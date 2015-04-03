@@ -10,9 +10,11 @@ import JavaFiles.Characters.MoveResult;
 public abstract class StatusEffect extends Character {
     private Character character;
     private int turnsRemaining;
+    private String statusEffectName;
 
     // Default constructor for an object of type StatusEffect
-    public StatusEffect() {
+    public StatusEffect(String statusEffectName) {
+        this.statusEffectName = statusEffectName;
         turnsRemaining = 3;
     }
 
@@ -21,6 +23,12 @@ public abstract class StatusEffect extends Character {
     {
         this.character = character;
         return this;
+    }
+
+    // get a reference to the character object stored in this class
+    public Character getCharacter()
+    {
+        return this.character;
     }
 
     // Set the amount of turns remaining of this status effect
@@ -69,4 +77,35 @@ public abstract class StatusEffect extends Character {
         // make the compiler happy =)
         return resultingCharacter;
     }
+
+    // returns the name of the character stored in this status effect
+    public String getName()
+    {
+        return this.character.getName();
+    }
+
+    // returns the moves of the character stored in this status effect
+    public List<Move> getMoves()
+    {
+        return this.character.getMoves();
+    }
+
+    // returns the names of the moves of the character stored in this status effect
+    public List<String> getMoveNames()
+    {
+        return this.character.getMoveNames();
+    }
+
+    // returns the move with the corresponding name in the character stored in this status effect
+    public Move findMoveByName(String name)
+    {
+        return this.character.findMoveByName(name);
+    }
+
+    // returns the name of this status effect
+    public String getStatusEffectName()
+    {
+        return this.statusEffectName;
+    }
+
 }

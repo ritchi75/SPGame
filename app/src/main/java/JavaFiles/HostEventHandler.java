@@ -2,9 +2,10 @@ package JavaFiles;
 
 import android.media.Image;
 
-import java.util.List;
+import java.util.*;
 
 import JavaFiles.Characters.MoveResult;
+import JavaFiles.Characters.Warrior;
 
 /**
  * Created by AlexC on 3/28/2015.
@@ -50,7 +51,7 @@ public class HostEventHandler extends EventHandler {
             result += " which inflicted: ";
             // add names of all status effects used from the rest of the list, skipping the first slot
             // which contains the damage
-            for(String effectName : moveResultMessage.subList(1,moveResultMessage.size() - 1))
+            for(String effectName : moveResultMessage.subList(1,moveResultMessage.size()))
             {
                 result += effectName;
                 result += " ";

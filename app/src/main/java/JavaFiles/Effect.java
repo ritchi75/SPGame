@@ -26,4 +26,10 @@ public class Effect {
     public List<Character> getStatus_effects() {
         return this.status_effects;
     }
+
+    // change the damage of this attack
+    public void setBase_damage(int base_damage)
+    {
+        this.base_damage = base_damage;
+    }
 }

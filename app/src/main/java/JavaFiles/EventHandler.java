@@ -2,6 +2,7 @@ package JavaFiles;
 
 import android.media.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import JavaFiles.*;
@@ -45,5 +46,30 @@ public abstract class EventHandler {
     public List<Character> getEnemies()
     {
         return this.enemies;
+    }
+
+    // returns the names of the players
+    public ArrayList<String> getPlayerNames()
+    {
+        ArrayList<String> names = new ArrayList<String>();
+
+        for(Character character : players)
+        {
+            names.add(character.getName());
+        }
+        return names;
+    }
+
+    // returns the names of the players
+    public ArrayList<String> getEnemyNames()
+    {
+        ArrayList<String> names = new ArrayList<String>();
+
+        for(Character character : enemies)
+        {
+            names.add(character.getName());
+        }
+
+        return names;
     }
 }

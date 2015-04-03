@@ -84,7 +84,8 @@ public class Warrior extends JavaFiles.Character {
 
         for(Character efct : effects)
         {
-              result.add(efct.getName());
+              StatusEffect se = (StatusEffect) efct;
+              result.add(se.getStatusEffectName());
         }
 
         // return the move result with the resulting character and a list of strings which has
