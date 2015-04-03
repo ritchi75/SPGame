@@ -1,11 +1,7 @@
-package JavaFiles;
-
-import android.graphics.Bitmap;
+package JavaFiles.Characters;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import JavaFiles.Characters.MoveResult;
 
 /**
  * Created by AlexC on 3/10/2015.

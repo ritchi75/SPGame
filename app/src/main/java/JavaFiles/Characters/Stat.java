@@ -1,4 +1,4 @@
-package JavaFiles;
+package JavaFiles.Characters;
 
 /**
  * Created by AlexC on 3/10/2015.

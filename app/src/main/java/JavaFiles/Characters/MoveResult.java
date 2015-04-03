@@ -2,16 +2,13 @@ package JavaFiles.Characters;
 
 import java.util.List;
 
-import JavaFiles.*;
-import JavaFiles.Character;
-
 /**
  * Created by AlexC on 3/26/2015.
  * Used to store the resulting character and the message after using a move on
  * said character
  */
 public class MoveResult {
-    private JavaFiles.Character resultCharacter;
+    private Character resultCharacter;
     private List<String> resultMessage;
 
     // default constructor for object of type MoveResult

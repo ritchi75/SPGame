@@ -1,11 +1,9 @@
 package JavaFiles.StatusEffects;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import JavaFiles.*;
-import JavaFiles.Character;
+import JavaFiles.Characters.Character;
+import JavaFiles.Characters.Effect;
 import JavaFiles.Characters.MoveResult;
+import JavaFiles.Characters.StatusEffect;
 
 /**
  * Created by AlexC on 3/27/2015.

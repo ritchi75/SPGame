@@ -1,4 +1,4 @@
-package JavaFiles;
+package JavaFiles.Characters;
 
 import android.media.Image;
 

@@ -33,7 +33,7 @@
         android:textSize="17sp"
         android:textColor="#00ff00"/>
 
-    <JavaFiles.StageView
+    <JavaFiles.Events.StageView
         android:layout_width="wrap_content"
         android:layout_height="245dp"
         android:contentDescription=""

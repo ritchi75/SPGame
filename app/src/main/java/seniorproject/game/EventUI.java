@@ -1,23 +1,20 @@
 package seniorproject.game;
 
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import JavaFiles.*;
-import JavaFiles.Character;
+import JavaFiles.Characters.Character;
 import JavaFiles.Characters.Warrior;
+import JavaFiles.Events.EventHandler;
+import JavaFiles.Events.HostEventHandler;
 
 /**
  * The EventUI Activity controls the activity_event_ui XML layout.
@@ -31,8 +28,8 @@ public class EventUI extends ActionBarActivity {
     private ArrayList<String> playerNames;
     private ArrayList<String> enemyNames;
     private List<String> moveNames;
-    private JavaFiles.Character user;
-    private JavaFiles.EventHandler handler;
+    private Character user;
+    private EventHandler handler;
 
     /**
      * Android Activity default method. Adds functionality to XML layout.

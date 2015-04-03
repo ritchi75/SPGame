@@ -1,15 +1,15 @@
-package JavaFiles;
+package JavaFiles.Characters;
 
 import java.util.List;
 
-import JavaFiles.Character;
+import JavaFiles.Characters.Character;
 
 /**
  * Created by AlexC on 3/10/2015.
  */
 public class Effect {
     private int base_damage;
-    private List<JavaFiles.Character> status_effects;
+    private List<Character> status_effects;
 
     // constructor for an instance of type
     public Effect(int base_damage, List<Character> status_effects) {

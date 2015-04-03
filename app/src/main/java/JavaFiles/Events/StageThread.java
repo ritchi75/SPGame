@@ -1,4 +1,4 @@
-package JavaFiles;
+package JavaFiles.Events;
 
 /**
  * Created by sor on 4/2/2015.

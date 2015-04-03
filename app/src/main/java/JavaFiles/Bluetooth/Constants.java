@@ -1,4 +1,4 @@
-package JavaFiles;
+package JavaFiles.Bluetooth;
 
 /**
  * Created by Matt on 3/15/2015.

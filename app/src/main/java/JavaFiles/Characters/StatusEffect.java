@@ -1,13 +1,11 @@
-package JavaFiles;
+package JavaFiles.Characters;
 
 import java.util.List;
-
-import JavaFiles.Characters.MoveResult;
 
 /**
  * Created by AlexC on 3/26/2015.
  */
-public abstract class StatusEffect extends Character {
+public abstract class StatusEffect extends JavaFiles.Characters.Character {
     private Character character;
     private int turnsRemaining;
     private String statusEffectName;

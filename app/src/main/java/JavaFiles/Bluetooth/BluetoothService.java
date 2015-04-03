@@ -1,4 +1,4 @@
-package JavaFiles;
+package JavaFiles.Bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

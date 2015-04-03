@@ -1,13 +1,11 @@
-package JavaFiles;
+package JavaFiles.Events;
 
 import android.media.Image;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import JavaFiles.*;
-import JavaFiles.Character;
-import JavaFiles.Characters.MoveResult;
+import JavaFiles.Characters.Character;
 
 /**
  * Created by AlexC on 3/12/2015.

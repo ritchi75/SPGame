@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import JavaFiles.*;
-import JavaFiles.Character;
 import JavaFiles.StatusEffects.HumanShield_StatusEffect;
 
 /**
  * Created by AlexC on 3/26/2015.
  */
-public class Warrior extends JavaFiles.Character {
+public class Warrior extends Character {
 
 
     // default constructor for an object of type warrior

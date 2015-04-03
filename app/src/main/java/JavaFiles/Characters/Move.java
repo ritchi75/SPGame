@@ -1,8 +1,6 @@
-package JavaFiles;
+package JavaFiles.Characters;
 
 import android.media.Image;
-
-import JavaFiles.Effect;
 
 /**
  * Created by AlexC on 3/10/2015.
