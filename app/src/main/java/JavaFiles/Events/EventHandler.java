@@ -17,8 +17,7 @@ public abstract class EventHandler {
 
 
     // Constructor for an object of type EventHandler
-    public EventHandler(List<Character> players, List<Character> enemies, Image backgroundImage)
-    {
+    public EventHandler(List<Character> players, List<Character> enemies, Image backgroundImage) {
         this.players = players;
         this.enemies = enemies;
         this.backgroundImage = backgroundImage;
@@ -28,12 +27,13 @@ public abstract class EventHandler {
     // Uses an attack
     public abstract String useMove(Character user, String moveName, String targetName);
 
+    // uses a move via bluetooth
+    public abstract String useMoveBluetooth(String bluetoothMove);
+
     // finds the target matching the given name in our list of enemies
-    private Character findTargetByName(String targetName)
-    {
-        for(Character character : enemies)
-        {
-            if(character.getName().equals(targetName))
+    private Character findTargetByName(String targetName) {
+        for (Character character : enemies) {
+            if (character.getName().equals(targetName))
                 return character;
         }
 
@@ -41,33 +41,34 @@ public abstract class EventHandler {
     }
 
     // returns the list of enemies
-    public List<Character> getEnemies()
-    {
+    public List<Character> getEnemies() {
         return this.enemies;
     }
 
     // returns the names of the players
-    public ArrayList<String> getPlayerNames()
-    {
+    public ArrayList<String> getPlayerNames() {
         ArrayList<String> names = new ArrayList<String>();
 
-        for(Character character : players)
-        {
+        for (Character character : players) {
             names.add(character.getName());
         }
         return names;
     }
 
     // returns the names of the players
-    public ArrayList<String> getEnemyNames()
-    {
+    public ArrayList<String> getEnemyNames() {
         ArrayList<String> names = new ArrayList<String>();
 
-        for(Character character : enemies)
-        {
+        for (Character character : enemies) {
             names.add(character.getName());
         }
 
         return names;
+    }
+
+    // returns the list of players
+    public List<Character> getPlayers()
+    {
+        return this.players;
     }
 }
