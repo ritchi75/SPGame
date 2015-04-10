@@ -47,4 +47,10 @@ public class EndTurnResult {
     {
         this.characters.add(character);
     }
+
+    // removes all status effects from this endTurnResult
+    public void clearStatusEffects()
+    {
+        this.characters.clear();
+    }
 }

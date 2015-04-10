@@ -49,12 +49,25 @@ public class HostEventHandler extends EventHandler {
         // use all 3 moves, storing their results in results
 
         // do end turn logic
-        // how to update with burns/poison???
+        int battleStatusCode = endTurn();
 
-        // send update message to other player
+        if(battleStatusCode == 0) {
+            // send update message to other player
 
-        // return the host's message
-        return null;
+            // return the host's message
+            return null;
+        }
+        else if(battleStatusCode == 1){
+            // battle over!
+            // tell the story that we won
+            return null;
+        }
+        else
+        {
+            // we lost :(
+            // tell the story that we lost
+            return null;
+        }
     }
 
     // Called by the Event Activity
@@ -161,11 +174,16 @@ public class HostEventHandler extends EventHandler {
 
     // checks for dead characters and removes status effects which have expired from characters
     // at the end of a turn
-    private List<String> endTurn()
+    // returns an int describing the outcome of the battle:
+    // 0 - battle is not over
+    // 1 - the player defeated the boss; exit to next story
+    // 2 - the boss defeated all the players; retry/exit to story
+    private int endTurn()
     {
-        // set up a list to store any damage done during this step from
-        // burns/poison/etc so we can update our messages
-        List<String> resultModifiers = new ArrayList<String>();
+        // keep track of whether or not all bosses are dead
+        int battleStatusCode = 0;
+        // story how many players are dead
+        int numDeadPlayers = 0;
 
         // store how much damage was done to the character during this step
         EndTurnResult result;
@@ -178,8 +196,15 @@ public class HostEventHandler extends EventHandler {
             // perform the end turn damage to the character
             character.endTurnDamage(result.getDamage());
             // update the character object with the applied status effects
-            character = character.getBaseCharacter().applyStatusEffects(result.getEffects());
+            super.updateCharacter(character.getBaseCharacter().applyStatusEffects(result.getEffects()));
+            //check if this player has died
+            if(character.getHP() <= 0)
+                numDeadPlayers++;
         }
+
+        // check if all players are dead
+        if(numDeadPlayers == getPlayers().size())
+            battleStatusCode = 2;
 
         // do the end turn checks for the boss
         for(Character character : this.getEnemies())
@@ -188,10 +213,15 @@ public class HostEventHandler extends EventHandler {
             result = character.endTurnCheck(new EndTurnResult(0));
             // perform the end turn damage to the character
             character.endTurnDamage(result.getDamage());
+            // update the character object with the applied status effects
+            super.updateCharacter(character.getBaseCharacter().applyStatusEffects(result.getEffects()));
+            //check if the boss died and the players win
+            if(character.getHP() <= 0)
+                battleStatusCode = 1;
         }
 
-        //check for dead boss/players
+        // if all players and boss die simultaneously, the players win
+        return battleStatusCode;
 
-        return null;
     }
 }

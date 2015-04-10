@@ -25,6 +25,12 @@ public abstract class Character {
         this.stat.modifyHealth(damage);
     }
 
+    // returns this character's remaining HP
+    public int getHP()
+    {
+        return this.stat.getHealth();
+    }
+
     // get a list of all moves usable by this character
     public List<Move> getMoves() {
         return this.moves;

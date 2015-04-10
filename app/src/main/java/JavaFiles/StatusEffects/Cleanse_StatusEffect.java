@@ -1,5 +1,6 @@
 package JavaFiles.StatusEffects;
 
+import JavaFiles.Characters.EndTurnResult;
 import JavaFiles.Characters.StatusEffect;
 
 /**
@@ -11,5 +12,14 @@ public class Cleanse_StatusEffect extends StatusEffect {
     public Cleanse_StatusEffect()
     {
         super("Cleanse");
+    }
+
+    @Override
+    //performs the end turn checks on this character
+    // cleanse will remove all status effects which are applied to the character
+    public EndTurnResult endTurnCheck(EndTurnResult result)
+    {
+        result.clearStatusEffects();
+        return result;
     }
 }
