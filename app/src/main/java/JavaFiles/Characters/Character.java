@@ -13,9 +13,16 @@ public abstract class Character {
     protected Stat stat;
     protected List<Item> inventory;
 
-    // Used to change(raise or lower) the hp of a character
+    // Used to change(raise(negative) or lower(positive)) the hp of a character
     public void ChangeHPBy(int amount) {
         this.stat.modifyHealth(amount);
+    }
+
+    // changes the hp without going through the status effects checks
+    // used for burn/poison damage
+    public void endTurnDamage(int damage)
+    {
+        this.stat.modifyHealth(damage);
     }
 
     // get a list of all moves usable by this character
@@ -23,7 +30,7 @@ public abstract class Character {
         return this.moves;
     }
 
-    // get a list of all move names useable by this character
+    // get a list of all move names usable by this character
     public List<String> getMoveNames() {
         List<String> moveNames = new ArrayList<String>();
 
@@ -63,13 +70,11 @@ public abstract class Character {
         return false;
     }
 
-    // checks which status effects this character already has and returns a list with all new ones to be applied
-    protected abstract List<Character> checkAppliedStatusEffects(List<Character> effects);
-    // if its a status effect class, remove its name from the list of effects if it is there; possibly refresh time on effect?
-    // then call the same method on the character object it stores
-    // if its a default job class then return the list of status effects as it remains
-    // all status effects which remain in the list the player doesn't already have and should be wrapped around the outermost class
-    // which hitByEffect was called on so return the list back there
+    // returns the list of status effects to apply to this character
+    // if it is being called on a base character, no further changes need to be made to the list so return it
+    protected List<Character> checkAppliedStatusEffects(List<Character> effects) {
+        return effects;
+    }
 
     // applies a status effect to this character
     public MoveResult hitByEffect(Effect effect) {
@@ -124,5 +129,18 @@ public abstract class Character {
         }
         // make the compiler happy =)
         return resultingCharacter;
+    }
+
+    // gets the base character
+    // returns this since only the base characters don't override this method
+    public Character getBaseCharacter()
+    {
+        return this;
+    }
+
+    // performs the check on what status effects need to be removed and the damage done
+    public int endTurnCheck()
+    {
+        return 0;
     }
 }

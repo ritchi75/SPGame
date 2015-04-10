@@ -62,11 +62,4 @@ public class Warrior extends Character {
                 6,      // Charisma
                 14);    // Resistance
     }
-
-    @Override
-    // returns the list of status effects to be applied as is
-    protected List<Character> checkAppliedStatusEffects(List<Character> effects) {
-        return effects;
-    }
-
 }

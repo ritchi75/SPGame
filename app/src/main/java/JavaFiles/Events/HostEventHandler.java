@@ -23,22 +23,35 @@ public class HostEventHandler extends EventHandler {
     }
 
     // uses bluetooth to wait for all inputs then activate them in the proper order
-    public String useMoveBluetooth(String bluetoothMove)
-    {
+    public String useMoveBluetooth(String bluetoothMove) {
         // keep of a list of the strings to be used to update the UI
         List<String> results = new ArrayList<String>();
 
-        // get the string from the other bluetooth connection if there is one
+        // if(multiplayer) {
+        // wait until we recieve another move
+        //while (recievedString = "") {}
+        // get the string from the other bluetooth connection if there is one }
         String otherPlayerMove = "";
+
 
         // get the move that the boss will use
         String bossMove = ""; //getBossMove();
 
         // when movesThisTurn has all 3 moves, check for which order to execute in and do it
+        // get the references to characters based on their names
+        Character userOne;
+        Character userTwo;
 
-        //send the appropriate return messages via bluetooth/internally\
+        //check speeds and for slow!!!
 
-        // call end turn logic to check for status effects leaving/dead characters
+        // use all 3 moves, storing their results in results
+
+        // do end turn logic
+        // how to update with burns/poison???
+
+        // send update message to other player
+
+        // return the host's message
         return null;
     }
 
@@ -141,5 +154,39 @@ public class HostEventHandler extends EventHandler {
         Random rng = new Random();
         // return a random move name within the size of the list
         return boss.getMoveNames().get(rng.nextInt(boss.getMoveNames().size()));
+    }
+
+    // checks for dead characters and removes status effects which have expired from characters
+    // at the end of a turn
+    private List<String> endTurn()
+    {
+        // set up a list to store any damage done during this step from
+        // burns/poison/etc so we can update our messages
+        List<String> resultModifiers = new ArrayList<String>();
+
+        // store how much damage was done to the character during this step
+        int damage;
+
+        // do end turn logic for all characters
+        for(Character character : this.getPlayers())
+        {
+            // do the end turn checks
+            damage = character.endTurnCheck();
+            // perform the end turn damage to the character
+            character.endTurnDamage(damage);
+        }
+
+        // do the end turn checks for the boss
+        for(Character character : this.getEnemies())
+        {
+            // do the end turn check
+            damage = character.endTurnCheck();
+            // perform the end turn damage to the character
+            character.endTurnDamage(damage);
+        }
+
+        //check for dead boss/players
+
+        return null;
     }
 }

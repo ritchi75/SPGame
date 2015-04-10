@@ -29,12 +29,4 @@ public class Rage_StatusEffect extends StatusEffect {
 
         return super.getCharacter().hitByEffect(effect);
     }
-
-    @Override
-    public boolean hasStatusEffect(StatusEffect statusEffect) {
-        if(statusEffect.getStatusEffectName().equals(this.getStatusEffectName()))
-            return true;
-
-        else return super.getCharacter().hasStatusEffect(statusEffect);
-    }
 }

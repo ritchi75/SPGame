@@ -21,18 +21,4 @@ public class Stunned_StatusEffect extends StatusEffect {
         super.setCharacter(character);
         super.setTurnsRemaining(1);
     }
-
-    @Override
-    // the stunned status effect does not change a character being hit by an attack
-    public MoveResult hitByEffect(Effect effect) {
-        return super.getCharacter().hitByEffect(effect);
-    }
-
-    @Override
-    public boolean hasStatusEffect(StatusEffect statusEffect) {
-        if(statusEffect.getStatusEffectName().equals(this.getStatusEffectName()))
-            return true;
-
-        else return super.getCharacter().hasStatusEffect(statusEffect);
-    }
 }

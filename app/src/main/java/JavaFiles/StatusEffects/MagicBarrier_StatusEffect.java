@@ -4,22 +4,20 @@ import JavaFiles.Characters.*;
 import JavaFiles.Characters.Character;
 
 /**
- * Created by Alex on 4/9/2015.
+ * Created by AlexC on 4/10/2015.
  */
-public class Defend_StatusEffect extends StatusEffect {
-
-    // default constructor for an object of type Defend_StatusEffect
-    public Defend_StatusEffect()
+public class MagicBarrier_StatusEffect extends StatusEffect {
+    // default constructor for an object of type MagicBarrier_StatusEffect
+    public MagicBarrier_StatusEffect()
     {
-        super("Defend");
+        super("Magic Barrier");
     }
 
-    // returns an object of type Defend_StatusEffect with a character inside
-    public Defend_StatusEffect(Character character)
-    {
-        super("Defend");
+    // returns an object of type MagicBarrier_statusEffect with a character object inside
+    public MagicBarrier_StatusEffect(Character character) {
+        super("Magic Barrier");
         super.setCharacter(character);
-        super.setTurnsRemaining(1);
+        super.setTurnsRemaining(3);
     }
 
     @Override

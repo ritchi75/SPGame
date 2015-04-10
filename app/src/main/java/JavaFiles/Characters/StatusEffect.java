@@ -47,8 +47,13 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
         return this.character.checkAppliedStatusEffects(effects);
     }
 
-    @Override
-    public abstract MoveResult hitByEffect(Effect effect);
+    // applies the effect of an attack on the character
+    // if the subclass doesn't override this method then it does not affect the effect so
+    // just check the character
+    public MoveResult hitByEffect(Effect effect)
+    {
+        return this.character.hitByEffect(effect);
+    }
 
     // returns the name of the character stored in this status effect
     public String getName()
@@ -68,6 +73,12 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
         return this.character.getMoveNames();
     }
 
+    // returns the amount of turns remaining
+    public int getTurnsRemaining()
+    {
+        return this.turnsRemaining;
+    }
+
     // returns the move with the corresponding name in the character stored in this status effect
     public Move findMoveByName(String name)
     {
@@ -81,6 +92,33 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
     }
 
     // returns whether or not the given character has the status effect
-    public abstract boolean hasStatusEffect(StatusEffect statusEffect);
+    public boolean hasStatusEffect(StatusEffect statusEffect) {
+        if(statusEffect.getStatusEffectName().equals(this.getStatusEffectName()))
+            return true;
 
+        else return this.character.hasStatusEffect(statusEffect);
+    }
+
+    // returns the base character object from the decorated character with status effects
+    public Character getBaseCharacter()
+    {
+        return this.character.getBaseCharacter();
+    }
+
+    @Override
+    //performs the end turn checks on this character
+    // remove this status effect if it has run out of turns remaining
+    // else check the next one
+    public int endTurnCheck()
+    {
+        if(this.turnsRemaining == 1)
+        {
+            // remove it
+        }
+        // else decrement the turns remaining
+        else {
+            turnsRemaining -= 1;
+        }
+        return 0 + this.character.endTurnCheck();
+    }
 }

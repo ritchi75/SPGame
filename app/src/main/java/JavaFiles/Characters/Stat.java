@@ -29,7 +29,7 @@ public class Stat {
 
     // modify the health value
     public void modifyHealth(int healthChange) {
-        this.health += healthChange;
+        this.health -= healthChange;
     }
 
     // get the current strength value
