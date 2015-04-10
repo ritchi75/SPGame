@@ -3,9 +3,11 @@ package JavaFiles.Events;
 import android.media.Image;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import JavaFiles.Characters.Character;
 import JavaFiles.Characters.Effect;
+import JavaFiles.Characters.EndTurnResult;
 import JavaFiles.Characters.Move;
 import JavaFiles.Characters.MoveResult;
 
@@ -74,8 +76,9 @@ public class HostEventHandler extends EventHandler {
         // unpack the message from the MoveResult
         List<String> moveResultMessage = moveResult.getResultMessage();
         //un pack the resulting character from the MoveResult
-        // and save its reference to overwrite the current target
         target = moveResult.getResultCharacter();
+        //overwrite the corresponding character with this new one
+        super.updateCharacter(target);
 
         // break down our result to a single, formatted string
         String result = user.getName() + " used " + moveName + " against " + target.getName();
@@ -165,24 +168,26 @@ public class HostEventHandler extends EventHandler {
         List<String> resultModifiers = new ArrayList<String>();
 
         // store how much damage was done to the character during this step
-        int damage;
+        EndTurnResult result;
 
         // do end turn logic for all characters
         for(Character character : this.getPlayers())
         {
             // do the end turn checks
-            damage = character.endTurnCheck();
+            result = character.endTurnCheck(new EndTurnResult(0));
             // perform the end turn damage to the character
-            character.endTurnDamage(damage);
+            character.endTurnDamage(result.getDamage());
+            // update the character object with the applied status effects
+            character = character.getBaseCharacter().applyStatusEffects(result.getEffects());
         }
 
         // do the end turn checks for the boss
         for(Character character : this.getEnemies())
         {
             // do the end turn check
-            damage = character.endTurnCheck();
+            result = character.endTurnCheck(new EndTurnResult(0));
             // perform the end turn damage to the character
-            character.endTurnDamage(damage);
+            character.endTurnDamage(result.getDamage());
         }
 
         //check for dead boss/players

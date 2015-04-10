@@ -71,4 +71,25 @@ public abstract class EventHandler {
     {
         return this.players;
     }
+
+    // update the list containing the characters
+    public void updateCharacter(Character character)
+    {
+        for(int i = 0; i < enemies.size(); i++)
+        {
+            if(enemies.get(i).getName().equals(character.getName())) {
+                enemies.set(i, character);
+                break;
+            }
+        }
+
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).getName().equals(character.getName()))
+            {
+                players.set(i, character);
+                break;
+            }
+        }
+    }
 }

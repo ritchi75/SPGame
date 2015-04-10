@@ -26,20 +26,22 @@ public class Burned_StatusEffect extends StatusEffect {
     //performs the end turn checks on this character
     // remove this status effect if it has run out of turns remaining
     // else check the next one
-    public int endTurnCheck()
-    {
+    public EndTurnResult endTurnCheck(EndTurnResult result) {
         int turnsRemaining = super.getTurnsRemaining();
 
-        if(turnsRemaining== 1)
-        {
-            // remove it
+        // add our 2 damage to be dealt regardless if the status effect is expiring this turn or not
+        result.addDamage(2);
+
+        if (turnsRemaining == 1) {
+            return super.getCharacter().endTurnCheck(result);
         }
         // else decrement the turns remaining
         else {
-            super.setTurnsRemaining(turnsRemaining - 1);
+            turnsRemaining -= 1;
+            // add this to the list so it is kept wrapped around the character class later
+            result.addEffect(this);
         }
 
-        // add 2 damage to be done
-        return 2 + super.getCharacter().endTurnCheck();
+        return super.getCharacter().endTurnCheck(result);
     }
 }

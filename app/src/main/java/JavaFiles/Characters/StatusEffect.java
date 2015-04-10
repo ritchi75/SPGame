@@ -109,16 +109,18 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
     //performs the end turn checks on this character
     // remove this status effect if it has run out of turns remaining
     // else check the next one
-    public int endTurnCheck()
+    public EndTurnResult endTurnCheck(EndTurnResult result)
     {
         if(this.turnsRemaining == 1)
         {
-            // remove it
+            return this.character.endTurnCheck(result);
         }
         // else decrement the turns remaining
         else {
-            turnsRemaining -= 1;
+            this.turnsRemaining -= 1;
+            // add this to the list so it is kept wrapped around the character class later
+            result.addEffect(this);
         }
-        return 0 + this.character.endTurnCheck();
+        return this.character.endTurnCheck(result);
     }
 }

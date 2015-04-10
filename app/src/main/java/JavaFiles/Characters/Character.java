@@ -109,6 +109,7 @@ public abstract class Character {
     }
 
     // Applies the list of status effects to this character
+    // use recursion to prevent references from overlapping
     public Character applyStatusEffects(List<Character> effects) {
         // set up a result to store our new character objects
         // initially, set it to this character for if we don't need to make changes
@@ -139,8 +140,9 @@ public abstract class Character {
     }
 
     // performs the check on what status effects need to be removed and the damage done
-    public int endTurnCheck()
+    public EndTurnResult endTurnCheck(EndTurnResult result)
     {
-        return 0;
+        return result;
     }
+
 }
