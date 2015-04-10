@@ -58,7 +58,7 @@ public class Wizard extends Character{
     public Stat getWizardStats()
     {
         return new Stat
-                       (12,    // Health
+                       (120,    // Health
                         8,     // Strength
                         18,      // Intelligence
                         10,      // Agility

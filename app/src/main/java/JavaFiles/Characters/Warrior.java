@@ -36,7 +36,7 @@ public class Warrior extends Character {
         Move move4 = new Move("Rage", "Physical", null,
                  "Increases damage if it is used consecutively", new Effect(5, new ArrayList<Character>(Arrays.asList(new Character[] {new Stunned_StatusEffect()}))));
         Move move5 = new Move("Attack", "Physical", null,
-                 "A basic Attack", new Effect(3, new ArrayList<Character>()));
+                 "A basic Attack", new Effect(14, new ArrayList<Character>()));
         Move move6 = new Move("Defend", "Physical", null,
                  "Defend yourself",new Effect(0, new ArrayList<Character>(Arrays.asList(new Character[] {new Defend_StatusEffect()}))));
 
@@ -55,7 +55,7 @@ public class Warrior extends Character {
     private Stat getWarriorStats()
     {
         return new Stat
-                (20,    // Health
+                (200,    // Health
                 18,     // Strength
                 6,      // Intelligence
                 8,      // Agility
