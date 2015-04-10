@@ -50,32 +50,6 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
     @Override
     public abstract MoveResult hitByEffect(Effect effect);
 
-    @Override
-    // Applies the list of status effects to this character
-    public Character applyStatusEffects(List<Character> effects) {
-        // set up a result to store our new character objects
-        // initially, set it to this character for if we don't need to make changes
-        Character resultingCharacter = this;
-
-        // check if we have any effects left to apply
-        if(effects.size() > 0) {
-            // if so, apply one and call the applyStatusEffects method on the resulting Character object
-            resultingCharacter = ((StatusEffect) effects.get(0)).setCharacter(this);
-        }
-        else if(effects.size() > 1){
-            // if we have at least one more status effect to apply, apply it on the resulting object which we
-            // have already modified from before
-            return resultingCharacter.applyStatusEffects(effects.subList(1,effects.size()));
-        }
-        else {
-            // otherwise we are done so return our resulting character
-            // which will be wrapped once if we had 1 change, or this if we had 0 changes to make
-            return resultingCharacter;
-        }
-        // make the compiler happy =)
-        return resultingCharacter;
-    }
-
     // returns the name of the character stored in this status effect
     public String getName()
     {
@@ -105,5 +79,8 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
     {
         return this.statusEffectName;
     }
+
+    // returns whether or not the given character has the status effect
+    public abstract boolean hasStatusEffect(StatusEffect statusEffect);
 
 }
