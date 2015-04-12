@@ -1,14 +1,28 @@
 package JavaFiles.Stories;
 
+import java.util.ArrayList;
+
 /**
- * Created by Scott on 3/28/2015.
+ * Created by Matt on 4/8/2015.
  */
 public class Story {
 
-    private String storyString;
+    String title;
+    ArrayList<Integer> image;
 
-    public Story(){
+    public Story(String title, ArrayList<Integer> image) {
+        this.title = title;
+        this.image = image;
+    }
+
+    public String getTitle() {
+        return title;
 
     }
+
+    public ArrayList<Integer> getImage() {
+        return image;
+    }
+
 
 }

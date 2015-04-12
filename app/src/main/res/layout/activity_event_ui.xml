@@ -33,11 +33,10 @@
         android:textSize="17sp"
         android:textColor="#00ff00"/>
 
-    <JavaFiles.Events.StageView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="245dp"
-        android:contentDescription=""
-        android:id="@+id/stage" />
+        android:id="@+id/mainImage" />
 
     <!-- Player Health -->
     <TextView
