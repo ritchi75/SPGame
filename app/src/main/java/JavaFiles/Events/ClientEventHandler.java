@@ -17,7 +17,7 @@ public class ClientEventHandler extends EventHandler{
         super(players, enemies, backgroundImage);
     }
 
-    public String useMove(String userName, String moveName, String targetName) {
+    public MoveOutcome useMove(String userName, String moveName, String targetName) {
         return null;
     }
 

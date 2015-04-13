@@ -2,10 +2,12 @@ package JavaFiles.Events;
 
 import android.media.Image;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import JavaFiles.Characters.Character;
+import JavaFiles.Characters.MoveOutcome;
 
 /**
  * Created by AlexC on 3/12/2015.
@@ -25,7 +27,7 @@ public abstract class EventHandler {
 
     // Called by the Event Activity
     // Uses an attack
-    public abstract String useMove(String user, String moveName, String targetName);
+    public abstract MoveOutcome useMove(String user, String moveName, String targetName);
 
     // finds the target matching the given name in our list of enemies
     private Character findTargetByName(String targetName) {
@@ -99,5 +101,24 @@ public abstract class EventHandler {
     // returns a boss' move
     public String getBossMove(){
     return "Attack";
+    }
+
+    // returns the boss's hp
+    public int getBossHP()
+    {
+        return this.enemies.get(0).getHP();
+    }
+
+    // returns all of the player's hp levels
+    public ArrayList<Integer> getPlayerHP()
+    {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+
+        for(Character character : players)
+        {
+            result.add(character.getHP());
+        }
+
+        return result;
     }
 }

@@ -9,6 +9,7 @@ import JavaFiles.Characters.Character;
 import JavaFiles.Characters.Effect;
 import JavaFiles.Characters.EndTurnResult;
 import JavaFiles.Characters.Move;
+import JavaFiles.Characters.MoveOutcome;
 import JavaFiles.Characters.MoveResult;
 
 /**
@@ -26,7 +27,7 @@ public class HostEventHandler extends EventHandler {
 
     // Called by the Event Activity
     // use an attack
-    public String useMove(String userName, String moveName, String targetName)
+    public MoveOutcome useMove(String userName, String moveName, String targetName)
     {
 
         // get a reference to the user
@@ -70,7 +71,8 @@ public class HostEventHandler extends EventHandler {
         }
 
 
-        return result;
+        MoveOutcome moveOutcome = new MoveOutcome(target.getHP(), result);
+        return moveOutcome;
     }
 
     // finds the target matching the given name in our list of enemies and players

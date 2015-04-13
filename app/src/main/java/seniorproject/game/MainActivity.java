@@ -79,12 +79,13 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<Integer> storyImages = new ArrayList<Integer>(); //Current string of story images.
     boolean win = true;
 
+    //Event UI Fields
     private String targetName;
     private String moveSelected;
     private ArrayList<String> playerNames;
     private ArrayList<String> enemyNames;
     private List<String> moveNames;
-    private Character user;
+    private JavaFiles.Characters.Character user;
     private EventHandler handler;
 
     Button host;
@@ -148,6 +149,26 @@ public class MainActivity extends ActionBarActivity {
                         }
                         break;
                     case 2: //Attack
+                        // Get button text
+                        String currentText = ((TextView)v).getText().toString();
+
+                        // Attack action - click to choose
+                        if(currentText.equals("ATTACK")){
+                            Log.i(LOG, "ATTACK");
+                            moveSelected = "ATTACK";
+                            loadTargets();
+                        }
+                        // Ability option - click to choose
+                        else if(moveNames.contains(currentText)){
+                            moveSelected = currentText;
+                            loadTargets();
+                        }
+                        // Target option - click to choose
+                        else{
+                            targetName = currentText;
+                            loadDefaultButtons();
+                            // Activate button color
+                        }
                         break;
 
                 }
@@ -175,32 +196,101 @@ public class MainActivity extends ActionBarActivity {
                             sendMsg("STORYPOINT2"); //Tell other device you chose an option.
                             button2.setBackgroundColor(Color.LTGRAY);//Imitate a toggle button.
                             button1.setBackgroundColor(Color.DKGRAY);
+
                             if (messageRead.equals("STORYPOINT2")) { //Did you read in a message(did the other player pick?){
                                 messageRead = "";
                                 Log.d(LOG, messageRead);
                                 startActivity(2); //Start event Activity
+                                sendMsg("start2"); //Make sure the other device is on the same activity.
                             } else if (messageRead.equals("STORYPOINT1")) {
                                 messageRead = "";
                                 startActivity(2);
+                                sendMsg("start2"); //Make sure the other device is on the same activity.
                             }
                             //startActivity(2);
                         }
                         break;
 
                     case 2: //Ability
+                        // Get button text
+                        String currentText = ((TextView)v).getText().toString();
+
+                        // Ability action - click to choose
+                        if(currentText.equals("ABILITY")){
+                            Log.i(LOG, "ABILITY");
+
+                            loadAbilities();
+                        }
+                        // Ability option - click to choose
+                        else if(moveNames.contains(currentText)){
+                            moveSelected = currentText;
+                            loadTargets();
+                        }
+                        // Target option - click to choose
+                        else{
+                            targetName = currentText;
+                            loadDefaultButtons();
+                            // Activate button color
+                        }
                         break;
                 }
 
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //End turn
+            public void onClick(View v) { //End Turn
+                // Get button text
+                String currentText = ((TextView)v).getText().toString();
+
+                // End Turn - ends turn so that the action chosen may be performed
+                if(currentText.equals("END TURN")){
+                    if(moveSelected != null && targetName != null){
+                        Log.i(LOG, "END TURN");
+                        String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
+                        relay_box.setText(useMoveBluetooth(moveUsed));
+                        moveSelected = null;
+                        targetName = null;
+                    }
+                    else{
+                        relay_box.setText("Please select a move.");
+                        // Grey out button
+                    }
+                }
+                // Ability option - click to choose
+                else if(moveNames.contains(currentText)){
+                    moveSelected = currentText;
+                    loadTargets();
+                }
+                // Target option - click to choose
+                else{
+                    targetName = currentText;
+                    loadDefaultButtons();
+                    // Activate button color
+                }
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //Defend
+            public void onClick(View v) { //Defend
+                // Get button text
+                String currentText = ((TextView)v).getText().toString();
+
+                // Defend - click to choose
+                if(currentText.equals("DEFEND")){
+                    Log.i(LOG, "DEFEND");
+                    moveSelected = "DEFEND";
+                    targetName = "Not Null";
+                }
+                // Ability option - click to choose
+                else if(moveNames.contains(currentText)){
+                    moveSelected = currentText;
+                    loadTargets();
+                }
+                // Target option - click to choose
+                else{
+                    targetName = currentText;
+                    loadDefaultButtons();
+                    // Activate button color
+                }
             }
         });
     /*    sendString.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +315,17 @@ public class MainActivity extends ActionBarActivity {
 
         stories = new Stories();
         //Event UI
+        List<JavaFiles.Characters.Character> players = new ArrayList<>();
+        List<Character> enemies = new ArrayList<>();
+        players.add(new Warrior());
+        enemies.add(new Warrior());
+        handler = new HostEventHandler(players,enemies,null);
+        playerNames = handler.getPlayerNames();
+        enemyNames = handler.getEnemyNames();
+        user = players.get(0);
+        moveNames = user.getMoveNames();
+
+        //Button initialization
         relay_box = (TextView) findViewById(R.id.relay_box);
         enemyHp = (TextView) findViewById(R.id.enemyhp);
         playerhp = (TextView) findViewById(R.id.playerhp);
@@ -234,6 +335,8 @@ public class MainActivity extends ActionBarActivity {
         button4 = (Button) findViewById(R.id.button4);
         //stage = (SurfaceView) findViewById(R.id.stage);
         mainImage = (ImageView) findViewById(R.id.mainImage);
+
+
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mBluetoothService = new BluetoothService(context, mHandler);
@@ -287,7 +390,7 @@ public class MainActivity extends ActionBarActivity {
                 button4.setText("DEFEND");
                 //stage.setVisibility(View.VISIBLE);
                 mainImage.setVisibility(View.VISIBLE);
-                sendMsg("start2"); //Make sure the other device is on the same activity.
+                //sendMsg("start2"); //Make sure the other device is on the same activity.
                 startBossActivity();
                 break;
             case 3: //The win activity
@@ -332,6 +435,90 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    //EventUI Methods
+    /**
+     * Sets each button to the targets name the list of target names
+     */
+    private void loadTargets()
+    {
+        // get a list of the buttons
+        ArrayList<Button> buttons = getButtonList();
+
+        // loop through all enemy names for button text
+        int i = 0;
+        for(; i < enemyNames.size(); i ++)
+        {
+            buttons.get(i).setText(enemyNames.get(0));
+        }
+
+        // loop through all friendly names for button text
+        for(int j = 0; j < playerNames.size(); j++)
+        {
+            buttons.get(i).setText(playerNames.get(j));
+            i++;
+        }
+
+        // check if all buttons were wiped of text
+        for(; i < buttons.size(); i++)
+        {
+            buttons.get(i).setText("");
+        }
+    }
+
+    /**
+     * Sets the text in the four buttons to the ability names for the character
+     */
+    private void loadAbilities()
+    {
+        // get a list of all the buttons
+        List<Button> buttons = getButtonList();
+
+        // loop through all buttons and set the text
+        for(int i = 0; i < buttons.size(); i++)
+        {
+            if(i < moveNames.size())
+                buttons.get(i).setText(moveNames.get(i));
+        }
+    }
+
+    /**
+     * Loads the default text back into the four buttons
+     */
+    private void loadDefaultButtons()
+    {
+        Log.i("loadDeafultButtons", "ALAX");
+        // get a reference to the buttons
+        ArrayList<Button> buttons = getButtonList();
+
+        // set each default text
+        buttons.get(0).setText("ATTACK");
+        buttons.get(1).setText("ABILITY");
+        buttons.get(2).setText("END TURN");
+        buttons.get(3).setText("DEFEND");
+    }
+
+    /**
+     * Gets a list of the four buttons we need references to
+     * @return ArrayList of buttons
+     */
+    private ArrayList<Button> getButtonList()
+    {
+        // get a reference to the buttons
+        Button button1 = (Button)findViewById(R.id.button1);
+        Button button2 = (Button)findViewById(R.id.button2);
+        Button button3 = (Button)findViewById(R.id.button3);
+        Button button4 = (Button)findViewById(R.id.button4);
+
+        // save the buttons to a list
+        ArrayList<Button> buttons = new ArrayList<Button>();
+        buttons.add(button1);
+        buttons.add(button2);
+        buttons.add(button3);
+        buttons.add(button4);
+
+        return buttons;
+    }
+
     public void readMessage(String message) {
         messageRead=message;
         //force an activity change:
@@ -374,15 +561,20 @@ public class MainActivity extends ActionBarActivity {
             String[] bossMove = bMove.split("##");
 
             // Host first, then player two, then boss
-            String hostsMove = handler.useMove(hostMove[0], hostMove[1], hostMove[2]);
-            String playerTwosMove = handler.useMove(playerTwoMove[0], playerTwoMove[1], playerTwoMove[2]);
-            String bossesMove = handler.useMove(bossMove[0], bossMove[1], bossMove[2]);
+            MoveOutcome hostsMove = handler.useMove(hostMove[0], hostMove[1], hostMove[2]);
+            MoveOutcome playerTwosMove = handler.useMove(playerTwoMove[0], playerTwoMove[1], playerTwoMove[2]);
+            MoveOutcome bossesMove = handler.useMove(bossMove[0], bossMove[1], bossMove[2]);
 
             // set relay text to hostsMove
-            this.relay_box.setText(hostsMove);
+            this.relay_box.setText(hostsMove.getOutcomeMessage());
+
+            // update the boss's hp
+            int bossHP = handler.getBossHP();
+            this.enemyHp.setText(bossHP + "/100");
 
             // send message to player two
-            sendMsg(playerTwosMove);
+            int playerTwoHP = handler.getPlayerHP().get(1);
+            sendMsg(String.valueOf(playerTwoHP) + "##" + String.valueOf(bossHP) + "##" + playerTwosMove.getOutcomeMessage());
 
             // do end turn logic
             // 0 = battle still going
@@ -399,23 +591,28 @@ public class MainActivity extends ActionBarActivity {
         {
             // send our move to the host
             sendMsg(bluetoothMove);
+
             // wait for a response back from the host
-            while(messageRead.equals(""));
+            while (messageRead.equals("")) ;
 
-            // set our relay text to the read message
-            this.relay_box.setText(messageRead);
+            // player's hp, boss's hp, text describing moves used
+            String[] outcome = messageRead.split("##");
 
-            // clear out message read
+            this.playerhp.setText(outcome[0]);
+            this.enemyHp.setText(outcome[1]);
+            this.relay_box.setText(outcome[2]);
+            // clear out the message read
             messageRead = "";
 
+            // wait till we receive a message from the host
+            while (messageRead.equals("")) ;
+
+            int eventStatusCode = Integer.parseInt(messageRead);
+
+            messageRead = "";
+
+            return eventStatusCode;
         }
-        // wait till we recieve a message from the host
-        while(messageRead.equals(""));
-
-        int battleStatusCode = Integer.parseInt(messageRead);
-        messageRead = "";
-
-        return battleStatusCode;
     }
 
     //<------------------------------BLUETOOTH STUFF PAST THIS LINE------------------------------>
@@ -556,6 +753,8 @@ public class MainActivity extends ActionBarActivity {
         mBluetoothService.connect(device, secure);
     }
 
+
+
     private void makeDiscoverable() {
         Log.d(LOG, "ensureDiscoverable()");
         if (mBluetoothAdapter.getScanMode() !=
@@ -565,6 +764,11 @@ public class MainActivity extends ActionBarActivity {
             startActivity(discoverableIntent);
         }
     }
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
