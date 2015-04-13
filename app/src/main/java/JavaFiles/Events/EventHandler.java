@@ -25,10 +25,7 @@ public abstract class EventHandler {
 
     // Called by the Event Activity
     // Uses an attack
-    public abstract String useMove(Character user, String moveName, String targetName);
-
-    // uses a move via bluetooth
-    public abstract String useMoveBluetooth(String bluetoothMove);
+    public abstract String useMove(String user, String moveName, String targetName);
 
     // finds the target matching the given name in our list of enemies
     private Character findTargetByName(String targetName) {
@@ -91,5 +88,16 @@ public abstract class EventHandler {
                 break;
             }
         }
+    }
+
+    // end turn logic
+    public int endTurn()
+    {
+        return 0;
+    }
+
+    // returns a boss' move
+    public String getBossMove(){
+    return "Attack";
     }
 }

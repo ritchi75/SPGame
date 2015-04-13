@@ -20,10 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import JavaFiles.Bluetooth.BluetoothService;
 import JavaFiles.Bluetooth.Constants;
+import JavaFiles.Characters.*;
+import JavaFiles.Characters.Character;
+import JavaFiles.Events.EventHandler;
+import JavaFiles.Events.HostEventHandler;
 import JavaFiles.Stories.Stories;
 import JavaFiles.Stories.Story;
 
@@ -73,6 +78,14 @@ public class MainActivity extends ActionBarActivity {
     Stories stories;
     ArrayList<Integer> storyImages = new ArrayList<Integer>(); //Current string of story images.
     boolean win = true;
+
+    private String targetName;
+    private String moveSelected;
+    private ArrayList<String> playerNames;
+    private ArrayList<String> enemyNames;
+    private List<String> moveNames;
+    private Character user;
+    private EventHandler handler;
 
     Button host;
     Button join;
@@ -333,6 +346,78 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    // uses bluetooth to wait for all inputs then activate them in the proper order
+    // 0 = battle still ongoing
+    // 1 = victory
+    // 2 = lost
+    public int useMoveBluetooth(String bluetoothMove) {
+        // if the player is host
+        if (handler instanceof HostEventHandler) {
+            // keep of a list of the strings to be used to update the UI
+            List<String> results = new ArrayList<String>();
+
+            // wait until we receive another move
+            while (messageRead.equals("")) {
+            }
+            // get the string from the other bluetooth connection if there is one }
+            String otherPlayerMove = messageRead;
+
+            // clear out the message read
+            messageRead = "";
+
+            // get the move that the boss will use
+            String bMove = handler.getBossMove();
+
+            // when movesThisTurn has all 3 moves, parse them out:
+            String[] hostMove = bluetoothMove.split("##");
+            String[] playerTwoMove = otherPlayerMove.split("##");
+            String[] bossMove = bMove.split("##");
+
+            // Host first, then player two, then boss
+            String hostsMove = handler.useMove(hostMove[0], hostMove[1], hostMove[2]);
+            String playerTwosMove = handler.useMove(playerTwoMove[0], playerTwoMove[1], playerTwoMove[2]);
+            String bossesMove = handler.useMove(bossMove[0], bossMove[1], bossMove[2]);
+
+            // set relay text to hostsMove
+            this.relay_box.setText(hostsMove);
+
+            // send message to player two
+            sendMsg(playerTwosMove);
+
+            // do end turn logic
+            // 0 = battle still going
+            // 1 = victory
+            // 2 = defeat
+            int eventStatusCode = handler.endTurn();
+            // send the status code to the other player
+            sendMsg(Integer.toString(eventStatusCode));
+            // return the status code
+            return handler.endTurn();
+
+        }
+        else //player is not host
+        {
+            // send our move to the host
+            sendMsg(bluetoothMove);
+            // wait for a response back from the host
+            while(messageRead.equals(""));
+
+            // set our relay text to the read message
+            this.relay_box.setText(messageRead);
+
+            // clear out message read
+            messageRead = "";
+
+        }
+        // wait till we recieve a message from the host
+        while(messageRead.equals(""));
+
+        int battleStatusCode = Integer.parseInt(messageRead);
+        messageRead = "";
+
+        return battleStatusCode;
+    }
+
     //<------------------------------BLUETOOTH STUFF PAST THIS LINE------------------------------>
 
     private void sendMsg(String message) {
@@ -471,8 +556,6 @@ public class MainActivity extends ActionBarActivity {
         mBluetoothService.connect(device, secure);
     }
 
-
-
     private void makeDiscoverable() {
         Log.d(LOG, "ensureDiscoverable()");
         if (mBluetoothAdapter.getScanMode() !=
@@ -482,11 +565,6 @@ public class MainActivity extends ActionBarActivity {
             startActivity(discoverableIntent);
         }
     }
-
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -24,56 +24,13 @@ public class HostEventHandler extends EventHandler {
         super(players, enemies, backgroundImage);
     }
 
-    // uses bluetooth to wait for all inputs then activate them in the proper order
-    public String useMoveBluetooth(String bluetoothMove) {
-        // keep of a list of the strings to be used to update the UI
-        List<String> results = new ArrayList<String>();
-
-        // if(multiplayer) {
-        // wait until we recieve another move
-        //while (recievedString = "") {}
-        // get the string from the other bluetooth connection if there is one }
-        String otherPlayerMove = "";
-
-
-        // get the move that the boss will use
-        String bossMove = ""; //getBossMove();
-
-        // when movesThisTurn has all 3 moves, check for which order to execute in and do it
-        // get the references to characters based on their names
-        Character userOne;
-        Character userTwo;
-
-        //check speeds and for slow!!!
-
-        // use all 3 moves, storing their results in results
-
-        // do end turn logic
-        int battleStatusCode = endTurn();
-
-        if(battleStatusCode == 0) {
-            // send update message to other player
-
-            // return the host's message
-            return null;
-        }
-        else if(battleStatusCode == 1){
-            // battle over!
-            // tell the story that we won
-            return null;
-        }
-        else
-        {
-            // we lost :(
-            // tell the story that we lost
-            return null;
-        }
-    }
-
     // Called by the Event Activity
     // use an attack
-    public String useMove(Character user, String moveName, String targetName)
+    public String useMove(String userName, String moveName, String targetName)
     {
+
+        // get a reference to the user
+        Character user = findTargetByName(userName);
 
         // figure out which move was used
         Move moveUsed = user.findMoveByName(moveName);
@@ -137,7 +94,7 @@ public class HostEventHandler extends EventHandler {
     }
 
     // picks a move and target for the boss to use this turn
-    private String getBossMove()
+    public String getBossMove()
     {
         Character boss = super.getEnemies().get(0);
         String bossTarget = getBossTarget();
@@ -178,7 +135,7 @@ public class HostEventHandler extends EventHandler {
     // 0 - battle is not over
     // 1 - the player defeated the boss; exit to next story
     // 2 - the boss defeated all the players; retry/exit to story
-    private int endTurn()
+    public int endTurn()
     {
         // keep track of whether or not all bosses are dead
         int battleStatusCode = 0;
