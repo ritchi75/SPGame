@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -27,6 +28,7 @@ import JavaFiles.Bluetooth.BluetoothService;
 import JavaFiles.Bluetooth.Constants;
 import JavaFiles.Characters.*;
 import JavaFiles.Characters.Character;
+import JavaFiles.Events.ClientEventHandler;
 import JavaFiles.Events.EventHandler;
 import JavaFiles.Events.HostEventHandler;
 import JavaFiles.Stories.Stories;
@@ -69,6 +71,7 @@ public class MainActivity extends ActionBarActivity {
     Button button2;
     Button button3;
     Button button4;
+
     //SurfaceView stage;
     ImageView mainImage;
 
@@ -85,8 +88,15 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<String> playerNames;
     private ArrayList<String> enemyNames;
     private List<String> moveNames;
-    private JavaFiles.Characters.Character user;
+    private Character user;
+    private Character playerTwo;
     private EventHandler handler;
+    String bossChosen;
+    private Boolean isHost = true;
+    private boolean sentMsg;
+
+    // Character Data
+    private ArrayList<Character> players;
 
     Button host;
     Button join;
@@ -140,10 +150,14 @@ public class MainActivity extends ActionBarActivity {
                                 messageRead = "";
                                 Log.d(LOG, messageRead);
                                 button2.setBackgroundColor(Color.LTGRAY);
+                                bossChosen = "Robot";
                                 startActivity(2); //Start event Activity
-                            } else if (messageRead.equals("STORYPOINT2")) { //You both disagree, just start the first option.
+
+                            } else //(messageRead.equals("STORYPOINT2")) { //You both disagree, just start the first option.
+                            {
                                 messageRead = "";
                                 button2.setBackgroundColor(Color.LTGRAY);
+                                bossChosen = "Squiggle";
                                 startActivity(2);
                             }
                         }
@@ -153,9 +167,9 @@ public class MainActivity extends ActionBarActivity {
                         String currentText = ((TextView)v).getText().toString();
 
                         // Attack action - click to choose
-                        if(currentText.equals("ATTACK")){
+                        if(currentText.equals("Attack")){
                             Log.i(LOG, "ATTACK");
-                            moveSelected = "ATTACK";
+                            moveSelected = "Attack";
                             loadTargets();
                         }
                         // Ability option - click to choose
@@ -178,6 +192,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 switch (layer) {
                     case 0: //Join
+
                         Intent serverIntent = new Intent(context, DeviceListActivity.class);
                         startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
                         break;
@@ -200,10 +215,12 @@ public class MainActivity extends ActionBarActivity {
                             if (messageRead.equals("STORYPOINT2")) { //Did you read in a message(did the other player pick?){
                                 messageRead = "";
                                 Log.d(LOG, messageRead);
+                                bossChosen = "Robot";
                                 startActivity(2); //Start event Activity
-                                sendMsg("start2"); //Make sure the other device is on the same activity.
+                               sendMsg("start2"); //Make sure the other device is on the same activity.
                             } else if (messageRead.equals("STORYPOINT1")) {
                                 messageRead = "";
+                                bossChosen = "Squiggle";
                                 startActivity(2);
                                 sendMsg("start2"); //Make sure the other device is on the same activity.
                             }
@@ -247,7 +264,7 @@ public class MainActivity extends ActionBarActivity {
                     if(moveSelected != null && targetName != null){
                         Log.i(LOG, "END TURN");
                         String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
-                        relay_box.setText(useMoveBluetooth(moveUsed));
+                        int statusCode = useMoveBluetooth(moveUsed);
                         moveSelected = null;
                         targetName = null;
                     }
@@ -275,10 +292,10 @@ public class MainActivity extends ActionBarActivity {
                 String currentText = ((TextView)v).getText().toString();
 
                 // Defend - click to choose
-                if(currentText.equals("DEFEND")){
+                if(currentText.equals("Defend")){
                     Log.i(LOG, "DEFEND");
-                    moveSelected = "DEFEND";
-                    targetName = "Not Null";
+                    moveSelected = "Defend";
+                    targetName = user.getName();
                 }
                 // Ability option - click to choose
                 else if(moveNames.contains(currentText)){
@@ -313,17 +330,9 @@ public class MainActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.textView);
         title = (TextView) findViewById(R.id.title);*/
 
+
         stories = new Stories();
         //Event UI
-        List<JavaFiles.Characters.Character> players = new ArrayList<>();
-        List<Character> enemies = new ArrayList<>();
-        players.add(new Warrior());
-        enemies.add(new Warrior());
-        handler = new HostEventHandler(players,enemies,null);
-        playerNames = handler.getPlayerNames();
-        enemyNames = handler.getEnemyNames();
-        user = players.get(0);
-        moveNames = user.getMoveNames();
 
         //Button initialization
         relay_box = (TextView) findViewById(R.id.relay_box);
@@ -381,13 +390,13 @@ public class MainActivity extends ActionBarActivity {
                 enemyHp.setVisibility(View.VISIBLE);
                 playerhp.setVisibility(View.VISIBLE);
                 button1.setVisibility(View.VISIBLE);
-                button1.setText("ATTACK");
+                button1.setText("Attack");
                 button2.setVisibility(View.VISIBLE);
                 button2.setText("ABILITY");
                 button3.setVisibility(View.VISIBLE);
                 button3.setText("END TURN");
                 button4.setVisibility(View.VISIBLE);
-                button4.setText("DEFEND");
+                button4.setText("Defend");
                 //stage.setVisibility(View.VISIBLE);
                 mainImage.setVisibility(View.VISIBLE);
                 //sendMsg("start2"); //Make sure the other device is on the same activity.
@@ -420,8 +429,68 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    // starts a fight event
     public void startBossActivity() {
 
+        /*
+        if(isHost) {
+            Random rng = new Random();
+            players = new ArrayList<Character>();
+            if (rng.nextInt(2) == 0) {
+                user = new Warrior();
+                playerTwo = new Monk();
+                sendMsg("0");
+            } else {
+                user = new Rogue();
+                playerTwo = new Wizard();
+                sendMsg("1");
+            }
+
+            players.add(user);
+            players.add(playerTwo);
+        }
+        else
+        {
+            while(messageRead.equals(""))
+            {
+                mHandler.handleMessage(mHandler.obtainMessage());
+            }
+
+            if(messageRead.equals("0"))
+                user = new Monk();
+            else
+                user = new Wizard();
+
+            messageRead = "";
+        }
+        */
+
+        if(isHost) {
+            players = new ArrayList<Character>();
+            user = new Warrior();
+            playerTwo = new Monk();
+            players.add(user);
+            players.add(playerTwo);
+        }
+        else
+        {
+            user = new Monk();
+        }
+
+
+
+        if(isHost) {
+            this.handler = new HostEventHandler(players, bossChosen);
+            this.playerNames = handler.getPlayerNames();
+            this.moveNames = user.getMoveNames();
+            this.enemyNames = handler.getEnemyNames();
+        }
+        else
+        {
+            this.handler = new ClientEventHandler(bossChosen);
+            this.moveNames = user.getMoveNames();
+            this.enemyNames = handler.getEnemyNames();
+        }
     }
 
     public void startEndGameActivity() {
@@ -491,10 +560,10 @@ public class MainActivity extends ActionBarActivity {
         ArrayList<Button> buttons = getButtonList();
 
         // set each default text
-        buttons.get(0).setText("ATTACK");
+        buttons.get(0).setText("Attack");
         buttons.get(1).setText("ABILITY");
         buttons.get(2).setText("END TURN");
-        buttons.get(3).setText("DEFEND");
+        buttons.get(3).setText("Defend");
     }
 
     /**
@@ -528,6 +597,7 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(1);
                 break;
             case "start2":
+                bossChosen = "Squiggle";
                 startActivity(2);
                 break;
         }
@@ -539,13 +609,16 @@ public class MainActivity extends ActionBarActivity {
     // 2 = lost
     public int useMoveBluetooth(String bluetoothMove) {
         // if the player is host
-        if (handler instanceof HostEventHandler) {
+        if (isHost) {
             // keep of a list of the strings to be used to update the UI
             List<String> results = new ArrayList<String>();
-
+            Log.i("MSG_READ", messageRead);
+            Toast.makeText(getApplicationContext(), messageRead, Toast.LENGTH_LONG).show();
             // wait until we receive another move
-            while (messageRead.equals("")) {
+            while (!messageRead.contains("##")) {
+                mHandler.handleMessage(mHandler.obtainMessage());
             }
+
             // get the string from the other bluetooth connection if there is one }
             String otherPlayerMove = messageRead;
 
@@ -574,7 +647,17 @@ public class MainActivity extends ActionBarActivity {
 
             // send message to player two
             int playerTwoHP = handler.getPlayerHP().get(1);
-            sendMsg(String.valueOf(playerTwoHP) + "##" + String.valueOf(bossHP) + "##" + playerTwosMove.getOutcomeMessage());
+            String message = String.valueOf(playerTwoHP) + "##" + String.valueOf(bossHP) + "##" + playerTwosMove.getOutcomeMessage();
+            Log.i("Alex", message);
+            sendMsg(message);
+
+            while(messageRead.equals(""))
+            {
+                mHandler.handleMessage(mHandler.obtainMessage());
+            }
+
+            messageRead = "";
+
 
             // do end turn logic
             // 0 = battle still going
@@ -583,6 +666,12 @@ public class MainActivity extends ActionBarActivity {
             int eventStatusCode = handler.endTurn();
             // send the status code to the other player
             sendMsg(Integer.toString(eventStatusCode));
+
+            while(messageRead.equals(""))
+            {
+                mHandler.handleMessage(mHandler.obtainMessage());
+            }
+
             // return the status code
             return handler.endTurn();
 
@@ -591,12 +680,16 @@ public class MainActivity extends ActionBarActivity {
         {
             // send our move to the host
             sendMsg(bluetoothMove);
-
+            Log.i("MSG_READ", messageRead);
+            Toast.makeText(getApplicationContext(), messageRead, Toast.LENGTH_LONG).show();
             // wait for a response back from the host
-            while (messageRead.equals("")) ;
-
+            while (!messageRead.contains("##"))
+            {
+                mHandler.handleMessage(mHandler.obtainMessage());
+            }
             // player's hp, boss's hp, text describing moves used
             String[] outcome = messageRead.split("##");
+            sendMsg("1");
 
             this.playerhp.setText(outcome[0]);
             this.enemyHp.setText(outcome[1]);
@@ -605,9 +698,13 @@ public class MainActivity extends ActionBarActivity {
             messageRead = "";
 
             // wait till we receive a message from the host
-            while (messageRead.equals("")) ;
+            while (messageRead.equals(""))
+            {
+                mHandler.handleMessage(mHandler.obtainMessage());
+            }
 
             int eventStatusCode = Integer.parseInt(messageRead);
+            sendMsg("1");
 
             messageRead = "";
 
@@ -687,6 +784,17 @@ public class MainActivity extends ActionBarActivity {
                         //startActivity(intent);
                         //We are connected, hide this activity.
                         //sendMsg("start1");
+                        /*Random rng = new Random();
+                        boolean done = false;
+                        int ourNumber;
+                        int theirNumber;
+
+                         ourNumber = rng.nextInt(100000000);
+                         sendMsg(String.valueOf(ourNumber));
+                         theirNumber = Integer.parseInt(messageRead);*/
+
+
+
                         startActivity(1);                                       //<--START-ACTIVITY-->
                     }
                     break;

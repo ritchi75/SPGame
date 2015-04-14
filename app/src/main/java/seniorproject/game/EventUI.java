@@ -46,7 +46,7 @@ public class EventUI extends ActionBarActivity {
         List<Character> enemies = new ArrayList<>();
         players.add(new Warrior());
         enemies.add(new Warrior());
-        handler = new HostEventHandler(players,enemies,null);
+        //handler = new HostEventHandler(players,enemies,null);
         playerNames = handler.getPlayerNames();
         enemyNames = handler.getEnemyNames();
         user = players.get(0);
@@ -143,7 +143,7 @@ public class EventUI extends ActionBarActivity {
                 if(currentText.equals("End Turn")){
                     if(moveSelected != null && targetName != null){
                         String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
-                        relayText.setText(handler.useMove(user.getName(),moveSelected,targetName));
+                        //relayText.setText(handler.useMove(user.getName(),moveSelected,targetName));
                         moveSelected = null;
                         targetName = null;
                     }

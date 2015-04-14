@@ -23,6 +23,19 @@ public abstract class StatusEffect extends JavaFiles.Characters.Character {
         return this;
     }
 
+    // returns this character's remaining HP
+    public int getHP()
+    {
+        return this.character.getHP();
+    }
+
+    // changes the hp without going through the status effects checks
+    // used for burn/poison damage
+    public void endTurnDamage(int damage)
+    {
+        this.character.endTurnDamage(damage);
+    }
+
     // get a reference to the character object stored in this class
     public Character getCharacter()
     {

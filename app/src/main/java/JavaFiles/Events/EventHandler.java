@@ -5,9 +5,16 @@ import android.media.Image;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import JavaFiles.Characters.Character;
+import JavaFiles.Characters.EmpressBoss;
+import JavaFiles.Characters.GhostBoss;
+import JavaFiles.Characters.KnightBoss;
 import JavaFiles.Characters.MoveOutcome;
+import JavaFiles.Characters.RobotBoss;
+import JavaFiles.Characters.SkeletonBoss;
+import JavaFiles.Characters.SquiggleBoss;
 
 /**
  * Created by AlexC on 3/12/2015.
@@ -15,14 +22,15 @@ import JavaFiles.Characters.MoveOutcome;
 public abstract class EventHandler {
     private List<Character> players;
     private List<Character> enemies;
-    private Image backgroundImage;
 
 
     // Constructor for an object of type EventHandler
-    public EventHandler(List<Character> players, List<Character> enemies, Image backgroundImage) {
+    public EventHandler(List<Character> players, String enemyName) {
         this.players = players;
-        this.enemies = enemies;
-        this.backgroundImage = backgroundImage;
+        Character boss = loadBoss(enemyName);
+        ArrayList<Character> enemy = new ArrayList<>();
+        enemy.add(boss);
+        this.enemies = enemy;
     }
 
     // Called by the Event Activity
@@ -120,5 +128,20 @@ public abstract class EventHandler {
         }
 
         return result;
+    }
+
+    // returns an object of the corresponding boss
+    private Character loadBoss(String bossName)
+    {
+        switch(bossName) {
+            case "Squiggle": return new SquiggleBoss();
+            case "Empress": return new EmpressBoss();
+            case "Ghost": return new GhostBoss();
+            case "Knight": return new KnightBoss();
+            case "Robot": return new RobotBoss();
+        }
+
+        // otherwise it must be a skeleton
+        return new SkeletonBoss();
     }
 }
