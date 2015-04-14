@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,18 +34,15 @@ import JavaFiles.Stories.Stories;
 import JavaFiles.Stories.Story;
 
 /**
- * ----------READ ME----------
- * As of now this only allows for a two way communication.  4 way communication seems to be a bit more complicated and is a work in progress.
- * One problem with this app is once another activity is open the connection seems to be lost.  I need to solve this problem first.
- * Meanwhile I set it up so that as long as your within this activity you should be able to successfully pass Strings between two devices.
- * All you need to do is call the 'sendMessage()' method and pass in the desired String within the 'send String' set action listener method.
- * This way you can at least test features of our game as I begin to work on improving the bluetooth capabilities.
- * ----------READ ME----------
+ * Adventure Pals is a bluetooth game which consists of three modules.
+ * The first module is the connection screen, this is the first screen the user sees.
+ * The second screen shows the story, which will lead up to a battle
+ * The third screen will be the battle itself, once the battle has ended it will go to the second module.
  */
 public class MainActivity extends ActionBarActivity {
 
     Context context;
-    private static final String LOG = "Matt";
+    private static final String LOG = "Matt"; //Solely used to debug our code.
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
@@ -55,13 +53,8 @@ public class MainActivity extends ActionBarActivity {
     private BluetoothService mBluetoothService = null;
     private String mConnectedDeviceName = null;
 
-
+    // XML Layout TextView, ImageView, and Button objects
     TextView mainTextView;
-    TextView sentMessage;
-    TextView findTextView;
-    TextView textView;
-    TextView title;
-
     TextView relay_box;
     TextView enemyHp;
     TextView playerhp;
@@ -69,15 +62,21 @@ public class MainActivity extends ActionBarActivity {
     Button button2;
     Button button3;
     Button button4;
+    // StageView works on one phone, but not both while connected via Bluetooth
     //SurfaceView stage;
     ImageView mainImage;
 
-    int layer = 0;
+    // Music Players for loading music for its corresponding screen
+    MediaPlayer fightMP3 = new MediaPlayer();
+    MediaPlayer mainMP3 = new MediaPlayer();
+    MediaPlayer otherMP3 = new MediaPlayer();
+
+    int layer = 0; //The current activity the device is on.
     int story = 0;
-    private String messageRead = "";
-    Stories stories;
-    ArrayList<Integer> storyImages = new ArrayList<Integer>(); //Current string of story images.
-    boolean win = true;
+    private String messageRead = ""; //The message read in from the other phone.
+    Stories stories; //A list of all the stories in the game.
+    ArrayList<Integer> storyImages = new ArrayList<Integer>(); //Current string of story images used in the story module..
+    boolean win = true; //Did the player win?
 
     //Event UI Fields
     private String targetName;
@@ -87,10 +86,6 @@ public class MainActivity extends ActionBarActivity {
     private List<String> moveNames;
     private JavaFiles.Characters.Character user;
     private EventHandler handler;
-
-    Button host;
-    Button join;
-    Button sendString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,15 +101,14 @@ public class MainActivity extends ActionBarActivity {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT); //REQUEST_ENABLE_BT is a field.
         }
-        //Otherwise keep connecting
         //  if (mBluetoothService == null){
         setOnClickListeners();
         startActivity(0);
-        // Intent intent = new Intent(MainActivity.this, activity_test.class);
-        // startActivity(intent);
-        //  }
     }
 
+    /**
+     * Sets on click listeners
+     */
     public void setOnClickListeners() {
         Log.d("MATT", "setOnClickListeners()");
         button1.setOnClickListener(new View.OnClickListener() { //The variable name is misleading, make the current device discoverable.
@@ -123,14 +117,14 @@ public class MainActivity extends ActionBarActivity {
                     case 0: //find devices
                         makeDiscoverable();
                         break;
-                    case 1: //Story point 1
-                        if(story != 3) {
+                    case 1: //Story point 1(The previous button)
+                        if(story != 3) { //Once the user is at the end of the string of picture texts it should go to the else statement
                             if(story != 0) {
                                 story--;
                                 mainImage.setImageResource(storyImages.get(story));
                             }
                         }
-                        else {
+                        else { //Makes the button send the user to the next activity.
                             story = 0;
                             Log.d(LOG, "READ");
                             button1.setBackgroundColor(Color.LTGRAY);//Imitate a toggle button.
@@ -200,11 +194,13 @@ public class MainActivity extends ActionBarActivity {
                             if (messageRead.equals("STORYPOINT2")) { //Did you read in a message(did the other player pick?){
                                 messageRead = "";
                                 Log.d(LOG, messageRead);
+                                button1.setBackgroundColor(Color.LTGRAY);
                                 startActivity(2); //Start event Activity
                                 sendMsg("start2"); //Make sure the other device is on the same activity.
                             } else if (messageRead.equals("STORYPOINT1")) {
                                 messageRead = "";
-                                startActivity(2);
+                                button1.setBackgroundColor(Color.LTGRAY);
+                                startActivity(2); //Start event activity
                                 sendMsg("start2"); //Make sure the other device is on the same activity.
                             }
                             //startActivity(2);
@@ -302,18 +298,12 @@ public class MainActivity extends ActionBarActivity {
         });*/
     }
 
+    /**
+     * Initialize method - creates instances of all objects and variables used
+     */
     public void init() {
-        //Connect Activity
-       /* mainTextView = (TextView) findViewById(R.id.mainTextView);
-        sentMessage = (TextView) findViewById(R.id.sentMessage);
-        host = (Button) findViewById(R.id.host);
-        join = (Button) findViewById(R.id.join);
-        sendString = (Button) findViewById(R.id.sendString);
-        findTextView = (TextView) findViewById(R.id.findTextView);
-        textView = (TextView) findViewById(R.id.textView);
-        title = (TextView) findViewById(R.id.title);*/
 
-        stories = new Stories();
+        stories = new Stories(); //initializes a new story object which contains a list of all the stories in the game.
         //Event UI
         List<JavaFiles.Characters.Character> players = new ArrayList<>();
         List<Character> enemies = new ArrayList<>();
@@ -336,6 +326,10 @@ public class MainActivity extends ActionBarActivity {
         //stage = (SurfaceView) findViewById(R.id.stage);
         mainImage = (ImageView) findViewById(R.id.mainImage);
 
+        // Music Player
+        fightMP3 = MediaPlayer.create(this, R.raw.fight);
+        mainMP3 = MediaPlayer.create(this, R.raw.main);
+        otherMP3 = MediaPlayer.create(this, R.raw.other);
 
 
         // Initialize the BluetoothChatService to perform bluetooth connections
@@ -345,6 +339,14 @@ public class MainActivity extends ActionBarActivity {
         context = this;
     }
 
+    /**
+     * The startActivity method switches from the current activity (or module) to the next module
+     * according to what happens next in the game. Once one phone switches, it tells the other
+     * phone it's connected to to switch to the same module.
+     * @param toLayer  Switch to another layer. 1 is the Story Module, and 2 is the Event Module.
+     *                 0 is the Connect Module, but you have no need to switch to it. 3 is the
+     *                 Win Module where you WIN!
+     */
     public void startActivity(int toLayer) {
         relay_box.setVisibility(View.GONE);
         enemyHp.setVisibility(View.GONE);
@@ -356,6 +358,10 @@ public class MainActivity extends ActionBarActivity {
         //stage.setVisibility(View.GONE);
         mainImage.setVisibility(View.GONE);
         layer = toLayer;
+        // End all music
+        if(mainMP3.isPlaying()){ mainMP3.stop(); }
+        if(fightMP3.isPlaying()){ fightMP3.stop(); }
+        if(otherMP3.isPlaying()){ otherMP3.stop(); }
         switch (toLayer) {
             case 0: //The connect activity
                 relay_box.setVisibility(View.VISIBLE);
@@ -364,6 +370,9 @@ public class MainActivity extends ActionBarActivity {
                 button1.setText("Find Devices");
                 button2.setVisibility(View.VISIBLE); //"Join Devices"
                 button2.setText("Join");
+                // Begin main screen music & loop
+                mainMP3.setLooping(true);
+                mainMP3.start();
                 break;
             case 1: //The story activity
                 relay_box.setVisibility(View.VISIBLE); //"Title"
@@ -375,6 +384,9 @@ public class MainActivity extends ActionBarActivity {
                 button2.setText("Next");
                 //sendMessage("start1"); //Make sure the other device is on the same activity.
                 startStoryActivity();
+                // Begin main screen music & loop
+                otherMP3.setLooping(true);
+                otherMP3.start();
                 break;
             case 2: //The boss activity
                 relay_box.setVisibility(View.VISIBLE);
@@ -392,17 +404,24 @@ public class MainActivity extends ActionBarActivity {
                 mainImage.setVisibility(View.VISIBLE);
                 //sendMsg("start2"); //Make sure the other device is on the same activity.
                 startBossActivity();
+                fightMP3.setLooping(true);
+                fightMP3.start();
                 break;
             case 3: //The win activity
                 relay_box.setVisibility(View.VISIBLE);
                 mainImage.setVisibility(View.VISIBLE);
                 startEndGameActivity();
-
+                sendMsg("start3");
                 startActivity(0);
+                mainMP3.setLooping(true);
+                mainMP3.start();
                 break;
         }
     }
 
+    /**
+     * Grabs a new story from the stories class and loads it into the storyimages list to be used to display in the story module.
+     */
     public void startStoryActivity() {
         storyImages.clear(); //Get a new story.
         ArrayList<Story> storyBook = stories.getStories(); //A list of all stories in the game.
@@ -424,6 +443,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * Displays whether you one or lost the game.
+     */
     public void startEndGameActivity() {
         //This should just reset all character values.
         if(win == true)
@@ -435,7 +457,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    //EventUI Methods
+    //------------------------------------------------------
+    //----------------- EventUI Methods --------------------
+    //------------------------------------------------------
     /**
      * Sets each button to the targets name the list of target names
      */
@@ -519,16 +543,23 @@ public class MainActivity extends ActionBarActivity {
         return buttons;
     }
 
+    //Gets called when a message is read.
     public void readMessage(String message) {
-        messageRead=message;
+        messageRead=message; //This is used throughout the application.
         //force an activity change:
         switch(messageRead)
         {
             case "start1":
-                startActivity(1);
+                if(layer != 1) //Only change if the device is not on the same activity
+                    startActivity(1);
                 break;
             case "start2":
-                startActivity(2);
+                if(layer != 2) //Only change if the device is not on the same activity
+                    startActivity(2);
+                break;
+            case "start3":
+                if(layer != 3) //Only chance if the device is not on the same activity
+                    startActivity(3);
                 break;
         }
     }
@@ -617,6 +648,10 @@ public class MainActivity extends ActionBarActivity {
 
     //<------------------------------BLUETOOTH STUFF PAST THIS LINE------------------------------>
 
+    /**
+     * sends a message to the other device.
+     * @param message The message to be sent.
+     */
     private void sendMsg(String message) {
         Log.d(LOG, "sendMessage(" + message + ")");
 
@@ -735,7 +770,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * Establish connection with other divice
+     * Establish connection with other device
      *
      * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
      * @param secure Socket Security type - Secure (true) , Insecure (false)
@@ -764,10 +799,6 @@ public class MainActivity extends ActionBarActivity {
             startActivity(discoverableIntent);
         }
     }
-
-
-
-
 
 
     @Override

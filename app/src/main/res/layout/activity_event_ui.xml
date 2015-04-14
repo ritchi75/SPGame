@@ -65,14 +65,14 @@
 
             <Button
                 android:id="@+id/button1"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
                 android:text="@string/button1" />
 
             <Button
                 android:id="@+id/button2"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:text="@string/button2" />
 
         </TableRow>
@@ -84,14 +84,13 @@
 
             <Button
                 android:id="@+id/button3"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
                 android:text="@string/button3" />
 
             <Button
                 android:id="@+id/button4"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:text="@string/button4" />
 
         </TableRow>

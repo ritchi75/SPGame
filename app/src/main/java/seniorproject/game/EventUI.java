@@ -143,7 +143,7 @@ public class EventUI extends ActionBarActivity {
                 if(currentText.equals("End Turn")){
                     if(moveSelected != null && targetName != null){
                         String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
-                        relayText.setText(handler.useMove(user.getName(),moveSelected,targetName));
+                        relayText.setText("bro");
                         moveSelected = null;
                         targetName = null;
                     }
