@@ -21,8 +21,8 @@ public class HostEventHandler extends EventHandler {
     private List<String> movesThisTurn;
 
     // default constructor for an object of type HostEventHandler
-    public HostEventHandler(List<Character> players, List<Character> enemies, Image backgroundImage) {
-        super(players, enemies, backgroundImage);
+    public HostEventHandler(List<Character> players, String enemyName) {
+        super(players, enemyName);
     }
 
     // Called by the Event Activity
@@ -39,7 +39,15 @@ public class HostEventHandler extends EventHandler {
         Effect moveEffect = moveUsed.getEffect();
 
         // figure out which target was selected
-        Character target = findTargetByName(targetName);
+        Character target;
+        if(!targetName.equals("Not Null"))
+        {
+            target = findTargetByName(targetName);
+        }
+        else // we used defend. target ourself
+        {
+            target = findTargetByName(userName);
+        }
 
         // apply the move
         // returns a list with the damage in the first index and the names of any status effects applied afterwards
@@ -69,8 +77,6 @@ public class HostEventHandler extends EventHandler {
                 result += " ";
             }
         }
-
-
         MoveOutcome moveOutcome = new MoveOutcome(target.getHP(), result);
         return moveOutcome;
     }
