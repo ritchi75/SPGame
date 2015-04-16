@@ -494,6 +494,16 @@ public class MainActivity extends ActionBarActivity {
             user = new Monk();
         }
 
+        if(bossChosen.equals("Squiggle"))
+        {
+            // load squiggle + warrior + monk
+            this.mainImage.setImageResource(R.drawable.km_squiggle1);
+        }
+        else
+        {
+            // load robot + warrior + monk
+            this.mainImage.setImageResource(R.drawable.km_robot);
+        }
 
 
         if(isHost) {
