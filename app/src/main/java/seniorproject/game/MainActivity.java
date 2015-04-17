@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -98,6 +100,12 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_ui);
         init();
@@ -371,8 +379,8 @@ public class MainActivity extends ActionBarActivity {
         if(otherMP3.isPlaying()){ otherMP3.stop(); }
         switch (toLayer) {
             case 0: //The connect activity
-                relay_box.setVisibility(View.VISIBLE);
-                relay_box.setText("ADVENTURE PALS!");
+                mainImage.setVisibility(View.VISIBLE);
+                mainImage.setImageResource(R.drawable.mainscreen);
                 button1.setVisibility(View.VISIBLE); //"Find Devices"
                 button1.setText("Find Devices");
                 button2.setVisibility(View.VISIBLE); //"Join Devices"
