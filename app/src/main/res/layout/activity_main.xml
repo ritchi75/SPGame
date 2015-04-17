@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:gravity = "center_horizontal"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity = "center"
+        android:textSize = "18pt"
+        android:id = "@+id/title"
+        android:text = "ADVENTURE PALS!"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+        <TextView
+            android:text="@string/connectTitle"
+            android:id = "@+id/mainTextView"
+            android:gravity = "center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id = "@+id/join"
+                android:text = "@string/join"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:gravity = "center"
+            android:orientation = "vertical">
+
+            <TextView
+                android:text="@string/discoverTitle"
+                android:id = "@+id/findTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id = "@+id/host"
+                android:text = "@string/host"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id = "@+id/textView"
+            android:text = "@string/connectTitle1"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/sentMessage"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id = "@+id/sendString"/>
+
+
+</LinearLayout>
