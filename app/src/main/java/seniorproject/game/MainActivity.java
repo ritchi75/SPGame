@@ -90,7 +90,6 @@ public class MainActivity extends ActionBarActivity {
     private Character playerTwo;
     private EventHandler handler;
     String bossChosen;
-    private Boolean isHost = true;
     private boolean sentMsg;
 
     // Character Data
@@ -261,6 +260,16 @@ public class MainActivity extends ActionBarActivity {
                         Log.i(LOG, "END TURN");
                         String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
                         int statusCode = useMoveBluetooth(moveUsed);
+                        if(statusCode == 1)
+                        {
+                            // player won, go to next story
+                            relay_box.setText("You Win!");
+                        }
+                        else if(statusCode == 2)
+                        {
+                            //player lost, go to main menu?
+                            relay_box.setText("You lose :(");
+                        }
                         moveSelected = null;
                         targetName = null;
                     }
@@ -449,77 +458,99 @@ public class MainActivity extends ActionBarActivity {
     // starts a fight event
     public void startBossActivity() {
 
-        /*
-        if(isHost) {
-            Random rng = new Random();
-            players = new ArrayList<Character>();
-            if (rng.nextInt(2) == 0) {
-                user = new Warrior();
-                playerTwo = new Monk();
-                sendMsg("0");
-            } else {
-                user = new Rogue();
-                playerTwo = new Wizard();
-                sendMsg("1");
-            }
+        players = new ArrayList<Character>();
+        Random rng = new Random();
+        int characterNumber = rng.nextInt(4);
 
-            players.add(user);
-            players.add(playerTwo);
-        }
-        else
+        if(characterNumber == 0)
         {
-            while(messageRead.equals(""))
-            {
-                mHandler.handleMessage(mHandler.obtainMessage());
-            }
-
-            if(messageRead.equals("0"))
-                user = new Monk();
-            else
-                user = new Wizard();
-
-            messageRead = "";
-        }
-        */
-
-        if(isHost) {
-            players = new ArrayList<Character>();
             user = new Warrior();
-            playerTwo = new Monk();
-            players.add(user);
-            players.add(playerTwo);
+        }
+        else if(characterNumber == 1)
+        {
+            user = new Wizard();
+        }
+        else if(characterNumber == 2)
+        {
+            user = new Rogue();
         }
         else
         {
             user = new Monk();
         }
-
-        if(bossChosen.equals("Squiggle"))
-        {
-            // load squiggle + warrior + monk
-            this.mainImage.setImageResource(R.drawable.km_squiggle1);
-        }
-        else
-        {
-            // load robot + warrior + monk
-            this.mainImage.setImageResource(R.drawable.km_robot);
-        }
+        players.add(user);
 
 
-        if(isHost) {
-            this.handler = new HostEventHandler(players, bossChosen);
-            this.playerNames = handler.getPlayerNames();
-            this.moveNames = user.getMoveNames();
-            this.enemyNames = handler.getEnemyNames();
-        }
-        else
-        {
-            this.handler = new ClientEventHandler(bossChosen);
-            this.moveNames = user.getMoveNames();
-            this.enemyNames = handler.getEnemyNames();
-        }
+        loadBossImage();
+
+        this.handler = new HostEventHandler(players, bossChosen);
+        this.playerNames = handler.getPlayerNames();
+        this.moveNames = user.getMoveNames();
+        this.enemyNames = handler.getEnemyNames();
     }
 
+    /*
+    *   Displays the image for the appropriate boss depending on user character and bossChose
+     */
+    private void loadBossImage()
+    {
+        if(bossChosen.equals("Squiggle"))
+        {
+            if(user instanceof Warrior || user instanceof Monk)
+            {
+                this.mainImage.setImageResource(R.drawable.km_squiggle);
+            }
+            else
+            {
+                this.mainImage.setImageResource(R.drawable.wr_squiggle);
+            }
+        }
+        else if(bossChosen.equals("Empress"))
+        {
+            if(user instanceof Warrior || user instanceof Monk)
+            {
+                this.mainImage.setImageResource(R.drawable.km_trueempress);
+            }
+            else
+            {
+                this.mainImage.setImageResource(R.drawable.wr_trueempress);
+            }
+        }
+        else if(bossChosen.equals("Robot"))
+        {
+            if(user instanceof Warrior || user instanceof Monk)
+            {
+                this.mainImage.setImageResource(R.drawable.km_robot);
+            }
+            else
+            {
+                this.mainImage.setImageResource(R.drawable.wr_robot);
+            }
+        }
+        else if(bossChosen.equals("Skeleton"))
+        {
+            if(user instanceof Warrior || user instanceof Monk)
+            {
+                this.mainImage.setImageResource(R.drawable.km_skeleton);
+            }
+            else
+            {
+                this.mainImage.setImageResource(R.drawable.wr_skeleton);
+            }
+        }
+        else //ghost
+        {
+            if(user instanceof Warrior || user instanceof Monk)
+            {
+                this.mainImage.setImageResource(R.drawable.km_ghost);
+            }
+            else
+            {
+                this.mainImage.setImageResource(R.drawable.wr_ghost);
+            }
+        }
+    }
+    
     /**
      * Displays whether you one or lost the game.
      */
@@ -649,54 +680,27 @@ public class MainActivity extends ActionBarActivity {
     // 2 = lost
     public int useMoveBluetooth(String bluetoothMove) {
         // if the player is host
-        if (isHost) {
             // keep of a list of the strings to be used to update the UI
             List<String> results = new ArrayList<String>();
-            Log.i("MSG_READ", messageRead);
-            Toast.makeText(getApplicationContext(), messageRead, Toast.LENGTH_LONG).show();
-            // wait until we receive another move
-            while (!messageRead.contains("##")) {
-                mHandler.handleMessage(mHandler.obtainMessage());
-            }
 
-            // get the string from the other bluetooth connection if there is one }
-            String otherPlayerMove = messageRead;
-
-            // clear out the message read
-            messageRead = "";
 
             // get the move that the boss will use
             String bMove = handler.getBossMove();
 
-            // when movesThisTurn has all 3 moves, parse them out:
+            // when movesThisTurn has both moves, parse them out:
             String[] hostMove = bluetoothMove.split("##");
-            String[] playerTwoMove = otherPlayerMove.split("##");
             String[] bossMove = bMove.split("##");
 
             // Host first, then player two, then boss
             MoveOutcome hostsMove = handler.useMove(hostMove[0], hostMove[1], hostMove[2]);
-            MoveOutcome playerTwosMove = handler.useMove(playerTwoMove[0], playerTwoMove[1], playerTwoMove[2]);
             MoveOutcome bossesMove = handler.useMove(bossMove[0], bossMove[1], bossMove[2]);
 
             // set relay text to hostsMove
             this.relay_box.setText(hostsMove.getOutcomeMessage());
-
             // update the boss's hp
             int bossHP = handler.getBossHP();
-            this.enemyHp.setText(bossHP + "/100");
-
-            // send message to player two
-            int playerTwoHP = handler.getPlayerHP().get(1);
-            String message = String.valueOf(playerTwoHP) + "##" + String.valueOf(bossHP) + "##" + playerTwosMove.getOutcomeMessage();
-            Log.i("Alex", message);
-            sendMsg(message);
-
-            while(messageRead.equals(""))
-            {
-                mHandler.handleMessage(mHandler.obtainMessage());
-            }
-
-            messageRead = "";
+            this.enemyHp.setText(bossHP + "");
+            this.playerhp.setText(handler.getPlayers().get(0).getHP() + "");
 
 
             // do end turn logic
@@ -704,53 +708,12 @@ public class MainActivity extends ActionBarActivity {
             // 1 = victory
             // 2 = defeat
             int eventStatusCode = handler.endTurn();
-            // send the status code to the other player
-            sendMsg(Integer.toString(eventStatusCode));
-
-            while(messageRead.equals(""))
-            {
-                mHandler.handleMessage(mHandler.obtainMessage());
-            }
 
             // return the status code
             return handler.endTurn();
 
         }
-        else //player is not host
-        {
-            // send our move to the host
-            sendMsg(bluetoothMove);
-            Log.i("MSG_READ", messageRead);
-            Toast.makeText(getApplicationContext(), messageRead, Toast.LENGTH_LONG).show();
-            // wait for a response back from the host
-            while (!messageRead.contains("##"))
-            {
-                mHandler.handleMessage(mHandler.obtainMessage());
-            }
-            // player's hp, boss's hp, text describing moves used
-            String[] outcome = messageRead.split("##");
-            sendMsg("1");
 
-            this.playerhp.setText(outcome[0]);
-            this.enemyHp.setText(outcome[1]);
-            this.relay_box.setText(outcome[2]);
-            // clear out the message read
-            messageRead = "";
-
-            // wait till we receive a message from the host
-            while (messageRead.equals(""))
-            {
-                mHandler.handleMessage(mHandler.obtainMessage());
-            }
-
-            int eventStatusCode = Integer.parseInt(messageRead);
-            sendMsg("1");
-
-            messageRead = "";
-
-            return eventStatusCode;
-        }
-    }
 
     //<------------------------------BLUETOOTH STUFF PAST THIS LINE------------------------------>
 
