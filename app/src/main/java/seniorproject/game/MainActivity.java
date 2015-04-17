@@ -15,21 +15,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import JavaFiles.Bluetooth.BluetoothService;
 import JavaFiles.Bluetooth.Constants;
-import JavaFiles.Characters.*;
 import JavaFiles.Characters.Character;
-import JavaFiles.Events.ClientEventHandler;
+import JavaFiles.Characters.Monk;
+import JavaFiles.Characters.MoveOutcome;
+import JavaFiles.Characters.Rogue;
+import JavaFiles.Characters.Warrior;
+import JavaFiles.Characters.Wizard;
 import JavaFiles.Events.EventHandler;
 import JavaFiles.Events.HostEventHandler;
 import JavaFiles.Stories.Stories;
@@ -97,6 +101,12 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_ui);
         init();
@@ -380,12 +390,14 @@ public class MainActivity extends ActionBarActivity {
         if(otherMP3.isPlaying()){ otherMP3.stop(); }
         switch (toLayer) {
             case 0: //The connect activity
-                relay_box.setVisibility(View.VISIBLE);
-                relay_box.setText("ADVENTURE PALS!");
+                mainImage.setVisibility(View.VISIBLE);
+                mainImage.setImageResource(R.drawable.mainscreen);
                 button1.setVisibility(View.VISIBLE); //"Find Devices"
                 button1.setText("Find Devices");
                 button2.setVisibility(View.VISIBLE); //"Join Devices"
                 button2.setText("Join");
+                button3.setVisibility(View.VISIBLE);
+                button3.setText("Single Player");
                 // Begin main screen music & loop
                 mainMP3.setLooping(true);
                 mainMP3.start();
