@@ -14,17 +14,11 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="send" />
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: seniorproject.game" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="exception" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29ac23f9-d5e7-4638-930f-46c61ff93fad" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/seniorproject/game/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/seniorproject/game/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SPGame.iml" afterPath="$PROJECT_DIR$/SPGame.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_21_0_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_21_0_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_21_0_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_21_0_3.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SPGame.iws" />
@@ -51,9 +45,18 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/seniorproject/game/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.0974026" vertical-offset="5049" max-vertical-offset="14892">
-              <caret line="399" column="49" selection-start-line="399" selection-start-column="49" selection-end-line="399" selection-end-column="49" />
-              <folding />
+            <state vertical-scroll-proportion="0.33333334" vertical-offset="3501" max-vertical-offset="15538">
+              <caret line="252" column="0" selection-start-line="252" selection-start-column="0" selection-end-line="252" selection-end-column="0" />
+              <folding>
+                <element signature="e#4739#8479#0" expanded="true" />
+                <element signature="e#8468#8469#0" expanded="true" />
+                <element signature="e#8517#12490#0" expanded="true" />
+                <element signature="e#12479#12480#0" expanded="true" />
+                <element signature="e#12528#14844#0" expanded="true" />
+                <element signature="e#14833#14834#0" expanded="true" />
+                <element signature="e#14882#15777#0" expanded="true" />
+                <element signature="e#15766#15767#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1102,6 +1105,11 @@
       <created>1428630450655</created>
       <updated>1428630450655</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added single player functionality">
+      <created>1429303449214</created>
+      <updated>1429303449214</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1184,6 +1192,8 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="Added single player functionality" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added single player functionality" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1203,7 +1213,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="8823" max-vertical-offset="14943">
           <caret line="552" column="4" selection-start-line="552" selection-start-column="4" selection-end-line="552" selection-end-column="4" />
-          <folding />
+          <folding>
+            <element signature="e#4739#8479#0" expanded="true" />
+            <element signature="e#8468#8469#0" expanded="true" />
+            <element signature="e#8517#12490#0" expanded="true" />
+            <element signature="e#12479#12480#0" expanded="true" />
+            <element signature="e#12528#14844#0" expanded="true" />
+            <element signature="e#14833#14834#0" expanded="true" />
+            <element signature="e#14882#15777#0" expanded="true" />
+            <element signature="e#15766#15767#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1291,9 +1310,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/seniorproject/game/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.0974026" vertical-offset="5049" max-vertical-offset="14892">
-          <caret line="399" column="49" selection-start-line="399" selection-start-column="49" selection-end-line="399" selection-end-column="49" />
-          <folding />
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="3501" max-vertical-offset="15538">
+          <caret line="252" column="0" selection-start-line="252" selection-start-column="0" selection-end-line="252" selection-end-column="0" />
+          <folding>
+            <element signature="e#4739#8479#0" expanded="true" />
+            <element signature="e#8468#8469#0" expanded="true" />
+            <element signature="e#8517#12490#0" expanded="true" />
+            <element signature="e#12479#12480#0" expanded="true" />
+            <element signature="e#12528#14844#0" expanded="true" />
+            <element signature="e#14833#14834#0" expanded="true" />
+            <element signature="e#14882#15777#0" expanded="true" />
+            <element signature="e#15766#15767#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

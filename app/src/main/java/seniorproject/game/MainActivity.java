@@ -95,6 +95,7 @@ public class MainActivity extends ActionBarActivity {
     private EventHandler handler;
     String bossChosen;
     private boolean sentMsg;
+    private boolean singlePlayer;
 
     // Character Data
     private ArrayList<Character> players;
@@ -145,21 +146,32 @@ public class MainActivity extends ActionBarActivity {
                         else { //Makes the button send the user to the next activity.
                             story = 0;
                             Log.d(LOG, "READ");
-                            button1.setBackgroundColor(Color.LTGRAY);//Imitate a toggle button.
-                            button2.setBackgroundColor(Color.DKGRAY);
-                            sendMsg("STORYPOINT1"); //Tell other device you chose an option.
-                            if (messageRead.equals("STORYPOINT1")) { //Did you read in a message(did the other player pick?)
-                                messageRead = "";
-                                Log.d(LOG, messageRead);
-                                button2.setBackgroundColor(Color.LTGRAY);
-                                bossChosen = "Robot";
-                                startActivity(2); //Start event Activity
+                            if (singlePlayer == false) {
+                                button1.setBackgroundColor(Color.LTGRAY);//Imitate a toggle button.
+                                button2.setBackgroundColor(Color.DKGRAY);
+                                button1.setEnabled(false);
+                                button2.setEnabled(true);
+                                sendMsg("STORYPOINT1"); //Tell other device you chose an option.
+                                if (messageRead.equals("STORYPOINT1")) { //Did you read in a message(did the other player pick?)
+                                    messageRead = "";
+                                    Log.d(LOG, messageRead);
+                                    button2.setBackgroundColor(Color.LTGRAY);
+                                    bossChosen = "Robot";
+                                    button1.setEnabled(true);
+                                    button2.setEnabled(true);
+                                    startActivity(2); //Start event Activity
 
-                            } else //(messageRead.equals("STORYPOINT2")) { //You both disagree, just start the first option.
-                            {
-                                messageRead = "";
-                                button2.setBackgroundColor(Color.LTGRAY);
-                                bossChosen = "Squiggle";
+                                } else //(messageRead.equals("STORYPOINT2")) { //You both disagree, just start the first option.
+                                {
+                                    messageRead = "";
+                                    button2.setBackgroundColor(Color.LTGRAY);
+                                    bossChosen = "Squiggle";
+                                    button1.setEnabled(true);
+                                    button2.setEnabled(true);
+                                    startActivity(2);
+                                }
+                            }
+                            else {
                                 startActivity(2);
                             }
                         }
@@ -210,26 +222,36 @@ public class MainActivity extends ActionBarActivity {
                         else {
                             story--;
                             Log.d(LOG, messageRead);
-                            sendMsg("STORYPOINT2"); //Tell other device you chose an option.
-                            button2.setBackgroundColor(Color.LTGRAY);//Imitate a toggle button.
-                            button1.setBackgroundColor(Color.DKGRAY);
+                            if (singlePlayer == false) {
+                                sendMsg("STORYPOINT2"); //Tell other device you chose an option.
+                                button2.setBackgroundColor(Color.LTGRAY);//Imitate a toggle button.
+                                button1.setBackgroundColor(Color.DKGRAY);
+                                button1.setEnabled(false);
+                                button2.setEnabled(false);
 
-                            if (messageRead.equals("STORYPOINT2")) { //Did you read in a message(did the other player pick?){
-                                messageRead = "";
-                                Log.d(LOG, messageRead);
-                                button1.setBackgroundColor(Color.LTGRAY);
-                                bossChosen = "Robot";
-                                startActivity(2); //Start event Activity
-                               sendMsg("start2"); //Make sure the other device is on the same activity.
-                            } else if (messageRead.equals("STORYPOINT1")) {
-                                messageRead = "";
-                                button1.setBackgroundColor(Color.LTGRAY);
-                                startActivity(2); //Start event activity
-                                bossChosen = "Squiggle";
-                                startActivity(2);
-                                sendMsg("start2"); //Make sure the other device is on the same activity.
+                                if (messageRead.equals("STORYPOINT2")) { //Did you read in a message(did the other player pick?){
+                                    messageRead = "";
+                                    Log.d(LOG, messageRead);
+                                    button1.setBackgroundColor(Color.LTGRAY);
+                                    bossChosen = "Robot";
+                                    button1.setEnabled(true);
+                                    button2.setEnabled(true);
+                                    startActivity(2); //Start event Activity
+                                    sendMsg("start2"); //Make sure the other device is on the same activity.
+                                } else if (messageRead.equals("STORYPOINT1")) {
+                                    messageRead = "";
+                                    button1.setBackgroundColor(Color.LTGRAY);
+                                    button1.setEnabled(true);
+                                    button2.setEnabled(true);
+                                    startActivity(2); //Start event activity
+                                    bossChosen = "Squiggle";
+                                    sendMsg("start2"); //Make sure the other device is on the same activity.
+                                }
+                                //startActivity(2);
                             }
-                            //startActivity(2);
+                            else {
+                                startActivity(2);
+                            }
                         }
                         break;
 
@@ -261,44 +283,52 @@ public class MainActivity extends ActionBarActivity {
         });
         button3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { //End Turn
-                // Get button text
-                String currentText = ((TextView)v).getText().toString();
+                switch (layer) {
+                    case 0:
+                        singlePlayer = true;
+                        startActivity(1);
+                        break;
+                    case 2:
+                        // Get button text
+                        String currentText = ((TextView)v).getText().toString();
 
-                // End Turn - ends turn so that the action chosen may be performed
-                if(currentText.equals("END TURN")){
-                    if(moveSelected != null && targetName != null){
-                        Log.i(LOG, "END TURN");
-                        String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
-                        int statusCode = useMoveBluetooth(moveUsed);
-                        if(statusCode == 1)
-                        {
-                            // player won, go to next story
-                            relay_box.setText("You Win!");
+                        // End Turn - ends turn so that the action chosen may be performed
+                        if(currentText.equals("END TURN")){
+                            if(moveSelected != null && targetName != null){
+                                Log.i(LOG, "END TURN");
+                                String moveUsed = user.getName() + "##" + moveSelected + "##" + targetName;
+                                int statusCode = useMoveBluetooth(moveUsed);
+                                if(statusCode == 1)
+                                {
+                                    // player won, go to next story
+                                    relay_box.setText("You Win!");
+                                }
+                                else if(statusCode == 2)
+                                {
+                                    //player lost, go to main menu?
+                                    relay_box.setText("You lose :(");
+                                }
+                                moveSelected = null;
+                                targetName = null;
+                            }
+                            else{
+                                relay_box.setText("Please select a move.");
+                                // Grey out button
+                            }
                         }
-                        else if(statusCode == 2)
-                        {
-                            //player lost, go to main menu?
-                            relay_box.setText("You lose :(");
+                        // Ability option - click to choose
+                        else if(moveNames.contains(currentText)){
+                            moveSelected = currentText;
+                            loadTargets();
                         }
-                        moveSelected = null;
-                        targetName = null;
-                    }
-                    else{
-                        relay_box.setText("Please select a move.");
-                        // Grey out button
-                    }
+                        // Target option - click to choose
+                        else{
+                            targetName = currentText;
+                            loadDefaultButtons();
+                            // Activate button color
+                        }
                 }
-                // Ability option - click to choose
-                else if(moveNames.contains(currentText)){
-                    moveSelected = currentText;
-                    loadTargets();
-                }
-                // Target option - click to choose
-                else{
-                    targetName = currentText;
-                    loadDefaultButtons();
-                    // Activate button color
-                }
+
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
