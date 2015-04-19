@@ -421,7 +421,7 @@ public class MainActivity extends ActionBarActivity {
         switch (toLayer) {
             case 0: //The connect activity
                 mainImage.setVisibility(View.VISIBLE);
-                mainImage.setImageResource(R.drawable.mainscreen);
+                //mainImage.setImageResource(R.drawable.mainscreen);
                 button1.setVisibility(View.VISIBLE); //"Find Devices"
                 button1.setText("Find Devices");
                 button2.setVisibility(View.VISIBLE); //"Join Devices"
@@ -523,6 +523,7 @@ public class MainActivity extends ActionBarActivity {
         players.add(user);
 
 
+        bossChosen = "Squiggle";
         loadBossImage();
 
         this.handler = new HostEventHandler(players, bossChosen);
