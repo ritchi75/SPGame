@@ -550,7 +550,7 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-    
+
     /**
      * Displays whether you one or lost the game.
      */
