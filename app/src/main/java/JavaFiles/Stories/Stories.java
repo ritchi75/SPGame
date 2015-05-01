@@ -11,8 +11,12 @@ import seniorproject.game.R;
 public class Stories {
 
     ArrayList<Story> stories = new ArrayList<Story>();
+    ArrayList<Story> optionalDecisions = new ArrayList<>();
+    ArrayList<Story> decisionOutcomesAccept = new ArrayList<>();
+    ArrayList<Story> decisionOutcomesDecline = new ArrayList<>();
     private int storyPoint;
     private Boolean choiceMade;
+    private Story lastDecisionEvent;
 
 
     public Stories() {
@@ -24,6 +28,8 @@ public class Stories {
         storyPoint = -1;
         choiceMade = false;
         populateStories();
+        populateOptionalDecisions();
+        populateDecisionOutcomes();
     }
 
     // Returns a list of stories which will be displayed to the user
@@ -31,28 +37,105 @@ public class Stories {
     public Story getNextStory() {
         // advance the story
         storyPoint += 1;
+        Random rng = new Random();
 
-        switch(storyPoint)
-        {
-            case 0:
-                Random rng = new Random();
-                return stories.get(rng.nextInt(4));
-            case 1: return stories.get(4);
-            case 2: return stories.get(5);
-            case 3: return stories.get(6);
-            case 4: return stories.get(7);
-            case 5: return stories.get(8);
-            case 6:
-                // if the players accepted the kiss, jump to point 7
-                if(choiceMade)
-                    return stories.get(10);
-                // otherwise return point 6
-                return stories.get(9);
-            case 7: return stories.get(11);
-            case 8: return stories.get(12);
+        // check if the last story we did was a decision event we need to finish
+        if (lastDecisionEvent == null) {
+            String lastDecisionEventTitle = lastDecisionEvent.getTitle();
+            lastDecisionEvent= null;
+
+            // check which choice the user made
+            if(choiceMade)
+            {
+                if(lastDecisionEventTitle.contains("Salesman"))
+                {
+                    return decisionOutcomesAccept.get(rng.nextInt(2));
+                }
+                else   if(lastDecisionEventTitle.contains("Alley"))
+                {
+                    return decisionOutcomesAccept.get(rng.nextInt(2) + 2);
+                }
+                else if(lastDecisionEventTitle.contains("Fruit"))
+                {
+                    return decisionOutcomesAccept.get(rng.nextInt(2) + 4);
+                }
+                else
+                {
+                    return decisionOutcomesAccept.get(rng.nextInt(2) + 6);
+                }
+            }
+            // player declined
+            else
+            {
+                if(lastDecisionEventTitle.contains("Salesman"))
+                {
+                    return decisionOutcomesDecline.get(0);
+                }
+                else   if(lastDecisionEventTitle.contains("Alley"))
+                {
+                    return decisionOutcomesDecline.get(1);
+                }
+                else if(lastDecisionEventTitle.contains("Fruit"))
+                {
+                    return decisionOutcomesDecline.get(2);
+                }
+                else
+                {
+                    return decisionOutcomesDecline.get(3);
+                }
+            }
+
+        } else {
+            switch (storyPoint) {
+                case 0:
+                    return stories.get(rng.nextInt(4));
+                case 1:
+                    // make sure we have at least one optional decision to update
+                    if (optionalDecisions.size() > 0) {
+                        // if we roll higher than 1, perform an optional deicison event
+                        if (rng.nextInt(3) > 1) {
+                            // make sure we come back to this story point next time
+                            storyPoint--;
+                            // get a random decision event
+                            Story story = this.optionalDecisions.get(rng.nextInt(optionalDecisions.size()));
+                            optionalDecisions.remove(story);
+                            lastDecisionEvent = story;
+                            return story;
+                        }
+                    } else
+                        return stories.get(4);
+                case 2:
+                    return stories.get(5);
+                case 3:
+                    // if we roll higher than 1, perform an optional deicison event
+                    if (rng.nextInt(3) > 1) {
+                        // make sure we come back to this story point next time
+                        storyPoint--;
+                        // get a random decision event
+                        Story story = this.optionalDecisions.get(rng.nextInt(optionalDecisions.size()));
+                        optionalDecisions.remove(story);
+
+                        return story;
+                    } else
+                        return stories.get(6);
+                case 4:
+                    return stories.get(7);
+                case 5:
+                    return stories.get(8);
+                case 6:
+                    // if the players accepted the kiss, jump to point 7
+                    if (choiceMade)
+                        return stories.get(10);
+                    // otherwise return point 6
+                    return stories.get(9);
+                case 7:
+                    return stories.get(11);
+                case 8:
+                    return stories.get(12);
+            }
+            // something went wrong, end the game
+            return null;
         }
-        // something went wrong, end the game
-        return null;
     }
 
     // returns the list of stories
@@ -175,6 +258,106 @@ public class Stories {
 
 
 
+    }
+
+    // creates all the story objects for the optional decision events within the story
+    private void populateOptionalDecisions()
+    {
+        // store the list of images assoicated with the stories
+        ArrayList<Integer> images = new ArrayList<Integer>();
+
+        // travelling salesman decision
+        images.add(R.drawable.salesman);
+        optionalDecisions.add(new Story("Travelling Salesman", images, false, true, null));
+
+        // alleyman decision
+        images.clear();
+        images.add(R.drawable.alley_man);
+        optionalDecisions.add(new Story("Alley Man", images, false, true, null));
+
+        // strange plant
+        images.clear();
+        images.add(R.drawable.strange_plant);
+        optionalDecisions.add(new Story("Eat The Fruit?", images, false, true, null));
+
+        // drunkard
+        images.clear();
+        images.add(R.drawable.drunkard1);
+        optionalDecisions.add(new Story("Will You Help?", images, false, true, null));
+
+
+    }
+
+    // create all the story objects for the optional decision event outcomes
+    private void populateDecisionOutcomes()
+    {
+        // store the list of images assoicated with the stories
+        ArrayList<Integer> images = new ArrayList<Integer>();
+
+        // travelling salesman good accept
+        images.add(R.drawable.salesman_good1);
+        images.add(R.drawable.salesman_good2);
+        decisionOutcomesAccept.add(new Story("Travelling Salesman Offer Accepted", images, false, true, null));
+
+        // travelling salesman bad accept
+        images.clear();
+        images.add(R.drawable.salesman_bad1);
+        images.add(R.drawable.salesman_bad2);
+        decisionOutcomesAccept.add(new Story("Travelling Salesman Offer Accepted", images, false, true, null));
+
+        // alley man good accept
+        images.clear();
+        images.add(R.drawable.alley_good1);
+        images.add(R.drawable.alley_good2);
+        decisionOutcomesAccept.add(new Story("Alleyman Offer Accepted", images, false, true, null));
+
+        // alley man bad accept
+        images.clear();
+        images.add(R.drawable.alley_bad1);
+        images.add(R.drawable.alley_bad2);
+        decisionOutcomesAccept.add(new Story("Alleyman Offer Accepted", images, false, true, null));
+
+        // strange plant good accept
+        images.clear();
+        images.add(R.drawable.strange_good_eat);
+        decisionOutcomesAccept.add(new Story("Eat The Strange Fruit", images, false, true, null));
+
+        // strange plant bad accept
+        images.clear();
+        images.add(R.drawable.strange_bad_eat);
+        decisionOutcomesAccept.add(new Story("Eat The Strange Fruit", images, false, true, null));
+
+        // drunkard good accept
+        images.clear();
+        images.add(R.drawable.drunk_good1);
+        images.add(R.drawable.drunk_good2);
+        decisionOutcomesAccept.add(new Story("Drunkard Offer Accepted", images, false, true, null));
+
+        // drunkard bad accept
+        images.clear();
+        images.add(R.drawable.drunk_bad1);
+        images.add(R.drawable.drunk_bad2);
+        decisionOutcomesAccept.add(new Story("Drunkard Offer Accepted", images, false, true, null));
+
+        // travelling salesman decline
+        images.clear();
+        images.add(R.drawable.salesman_abanson);
+        decisionOutcomesDecline.add(new Story("Travelling Salesman Offer Declined", images, false, true, null));
+
+        // travelling alleyman decline
+        images.clear();
+        images.add(R.drawable.alley_abandon);
+        decisionOutcomesDecline.add(new Story("Alleyman Offer Declined", images, false, true, null));
+
+        // travelling salesman decline
+        images.clear();
+        images.add(R.drawable.strange_abandon);
+        decisionOutcomesDecline.add(new Story("Strange Fruit Not Eaten", images, false, true, null));
+
+        // travelling salesman decline
+        images.clear();
+        images.add(R.drawable.drunk_abandon);
+        decisionOutcomesDecline.add(new Story("Drunkard Offer Declined", images, false, true, null));
     }
 
     // returns the story point we are currently on
