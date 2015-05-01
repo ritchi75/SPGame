@@ -139,11 +139,18 @@ public class MainActivity extends ActionBarActivity {
                         makeDiscoverable();
                         break;
                     case 1: //Story point 1(The previous button)
-                        if(story != 3) { //Once the user is at the end of the string of picture texts it should go to the else statement
-                            if(story != 0) {
-                                story--;
-                                mainImage.setImageResource(storyImages.get(story));
-                            }
+                        if(story != 0) {
+                            story--;
+                            mainImage.setImageResource(storyImages.get(story));
+                        }
+                        // the user made a decision
+                        else if(button1.getText().equals("Accept"))
+                        {
+                            stories.setChoiceMade(true);
+                            startActivity(1);
+                        }
+                        else if(story == 0) {
+                         // do nothing
                         }
                         else { //Makes the button send the user to the next activity.
                             story = 0;
@@ -158,7 +165,6 @@ public class MainActivity extends ActionBarActivity {
                                     messageRead = "";
                                     Log.d(LOG, messageRead);
                                     button2.setBackgroundColor(Color.LTGRAY);
-                                    bossChosen = "Robot";
                                     button1.setEnabled(true);
                                     button2.setEnabled(true);
                                     startActivity(1); //Start event Activity
@@ -167,7 +173,6 @@ public class MainActivity extends ActionBarActivity {
                                 {
                                     messageRead = "";
                                     button2.setBackgroundColor(Color.LTGRAY);
-                                    bossChosen = "Squiggle";
                                     button1.setEnabled(true);
                                     button2.setEnabled(true);
                                     startActivity(1);
@@ -215,11 +220,12 @@ public class MainActivity extends ActionBarActivity {
                     case 1: //Story point 2
                         if(story < maxStorySize - 1) {
                             story++;
-                            //if(story == 3) {
-                            //    button1.setText("Choose 1");
-                            //    button2.setText("Choose 2");
-                            //}
                             mainImage.setImageResource(storyImages.get(story));
+                        }
+                        else if(button2.getText().equals("Decline"))
+                        {
+                            stories.setChoiceMade(false);
+                            startActivity(1);
                         }
                         else {
                             // reset the story
@@ -307,7 +313,8 @@ public class MainActivity extends ActionBarActivity {
                                 }
                                 else if(statusCode == 2)
                                 {
-                                    mainImage.setImageResource(R.drawable.game_lose);
+                                    win = false;
+                                    startActivity(3);
                                 }
                                 moveSelected = null;
                                 targetName = null;
@@ -416,9 +423,9 @@ public class MainActivity extends ActionBarActivity {
         mainImage.setVisibility(View.GONE);
         layer = toLayer;
         // End all music
-        if(mainMP3.isPlaying()){ mainMP3.stop(); }
-        if(fightMP3.isPlaying()){ fightMP3.stop(); }
-        if(otherMP3.isPlaying()){ otherMP3.stop(); }
+        if(mainMP3.isPlaying()){ mainMP3.pause(); }
+        if(fightMP3.isPlaying()){ fightMP3.pause(); }
+        if(otherMP3.isPlaying()){ otherMP3.pause(); }
         switch (toLayer) {
             case 0: //The connect activity
                 mainImage.setVisibility(View.VISIBLE);
@@ -485,6 +492,11 @@ public class MainActivity extends ActionBarActivity {
         storyImages.clear(); //Get a new story.
 
         Story storyBook = stories.getNextStory(); //A list of all stories in the game.
+        // if it is null, we are out of stories and they won
+        if(storyBook == null) {
+            win = true;
+            startActivity(3);
+        }
         maxStorySize = storyBook.getNumImages();
         relay_box.setText(storyBook.getTitle());
 
@@ -507,8 +519,8 @@ public class MainActivity extends ActionBarActivity {
         }
         else if(storyBook.isDecision())
         {
-            button1.setText("Yes");
-            button2.setText("No");
+            button1.setText("Accept");
+            button2.setText("Decline");
             mainImage.setImageResource(storyBook.getImage().get(0)); //Show the first image.
         }
         else {
@@ -530,6 +542,9 @@ public class MainActivity extends ActionBarActivity {
         this.playerNames = handler.getPlayerNames();
         this.moveNames = user.getMoveNames();
         this.enemyNames = handler.getEnemyNames();
+
+        this.enemyHp.setText(String.valueOf(handler.getBossHP()));
+        this.playerhp.setText(String.valueOf(handler.getPlayerHP().get(0)));
     }
 
     /*
@@ -552,11 +567,11 @@ public class MainActivity extends ActionBarActivity {
         {
             if(user instanceof Warrior || user instanceof Monk)
             {
-                this.mainImage.setImageResource(R.drawable.km_trueempress);
+                this.mainImage.setImageResource(R.drawable.km_finalfight);
             }
             else
             {
-                this.mainImage.setImageResource(R.drawable.wr_trueempress);
+                this.mainImage.setImageResource(R.drawable.wr_finalfight);
             }
         }
         else if(bossChosen.equals("Robot"))
@@ -602,8 +617,16 @@ public class MainActivity extends ActionBarActivity {
         if(win == true)
             mainImage.setImageResource(R.drawable.game_win);
         else{
-            mainImage.setImageResource(R.drawable.game_lose);
+            try {
+                mainImage.setImageResource(R.drawable.game_lose);
+                Thread.sleep(3);
+                // start the story from the beginning
+                stories = new Stories();
+            }
+            catch (Exception e)
+            {
 
+            }
         }
 
     }

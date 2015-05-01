@@ -8,6 +8,7 @@ import JavaFiles.StatusEffects.Defend_StatusEffect;
 import JavaFiles.StatusEffects.HardBody_StatusEffect;
 import JavaFiles.StatusEffects.HumanShield_StatusEffect;
 import JavaFiles.StatusEffects.Poison_StatusEffect;
+import JavaFiles.StatusEffects.SmokeScreen_StatusEffect;
 import JavaFiles.StatusEffects.Stunned_StatusEffect;
 
 /**
@@ -27,11 +28,11 @@ public class Rogue extends Character {
     private List<Move> getRogueMoves()
     {
         Move move1 = new Move("Assassinate", "Physical", null,
-                "High damage strike", new Effect(0, new ArrayList<Character>()));
+                "High damage strike", new Effect(15, new ArrayList<Character>()));
         Move move2 = new Move("Coated Blade", "Physical", null,
                 "Chance to poison target", new Effect(8, new ArrayList<Character>(Arrays.asList(new Character[] {new Poison_StatusEffect()}))));
         Move move3 = new Move("Smoke Screen", "Physical", null,
-                "Increases target's evasion", new Effect(0, new ArrayList<Character>(Arrays.asList(new Character[] {new HardBody_StatusEffect()}))));
+                "Increases target's evasion", new Effect(0, new ArrayList<Character>(Arrays.asList(new Character[] {new SmokeScreen_StatusEffect()}))));
         Move move4 = new Move("Substitute", "Physical", null,
                 "Lets an inanimate object take the damage of the next attack", new Effect(5, new ArrayList<Character>(Arrays.asList(new Character[] {new Stunned_StatusEffect()}))));
         Move move5 = new Move("Attack", "Physical", null,

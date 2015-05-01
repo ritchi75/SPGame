@@ -171,7 +171,6 @@ public class Stories {
         images.add(R.drawable.empress_defeated4);
         images.add(R.drawable.empress_defeated5);
         images.add(R.drawable.empress_defeated6);
-        images.add(R.drawable.game_win);
         stories.add(new Story("Victory", images, false, false, null));
 
 
