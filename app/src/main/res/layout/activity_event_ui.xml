@@ -97,6 +97,17 @@
 
     </TableLayout>
 
+    <TextView
+        android:id="@+id/multi"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:paddingTop="20dp"
+        android:text="@string/multiplayer"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"/>
+
 </LinearLayout>
 
 

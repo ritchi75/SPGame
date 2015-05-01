@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AdventurePals</string>
+    <string name="app_name">Adventure Pals</string>
     <string name="action_settings">Settings</string>
     <string name="connectTitle">Click on connect for a list of nearby devices.</string>
     <string name="connectTitle1">Once both players have selected each other the game will begin.</string>
@@ -20,6 +20,7 @@
     <string name="title_paired_devices">Paired Devices</string>
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
+    <string name="multiplayer">Multiplayer coming soon!</string>
 
     <string name="button1">Attack</string>
     <string name="button2">Ability</string>

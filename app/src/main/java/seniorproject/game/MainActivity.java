@@ -65,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
     TextView relay_box;
     TextView enemyHp;
     TextView playerhp;
+    TextView multi;
     Button button1;
     Button button2;
     Button button3;
@@ -106,7 +107,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -389,6 +389,7 @@ public class MainActivity extends ActionBarActivity {
         button4 = (Button) findViewById(R.id.button4);
         //stage = (SurfaceView) findViewById(R.id.stage);
         mainImage = (ImageView) findViewById(R.id.mainImage);
+        multi = (TextView) findViewById(R.id.multi);
 
         // Music Player
         fightMP3 = MediaPlayer.create(this, R.raw.fight);
@@ -421,6 +422,7 @@ public class MainActivity extends ActionBarActivity {
         button4.setVisibility(View.GONE);
         //stage.setVisibility(View.GONE);
         mainImage.setVisibility(View.GONE);
+        multi.setVisibility(View.GONE);
         layer = toLayer;
         // End all music
         if(mainMP3.isPlaying()){ mainMP3.pause(); }
@@ -436,6 +438,7 @@ public class MainActivity extends ActionBarActivity {
                 button2.setText("Join");
                 button3.setVisibility(View.VISIBLE);
                 button3.setText("Single Player");
+                multi.setVisibility(View.VISIBLE);
                 // Begin main screen music & loop
                 mainMP3.setLooping(true);
                 mainMP3.start();
