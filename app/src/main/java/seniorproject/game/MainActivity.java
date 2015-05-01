@@ -481,7 +481,7 @@ public class MainActivity extends ActionBarActivity {
                 mainImage.setVisibility(View.VISIBLE);
                 startEndGameActivity();
                 sendMsg("start3");
-                startActivity(0);
+               // startActivity(0);
                 mainMP3.setLooping(true);
                 mainMP3.start();
                 break;
@@ -499,6 +499,14 @@ public class MainActivity extends ActionBarActivity {
         if(storyBook == null) {
             win = true;
             startActivity(3);
+            try{
+                Thread.sleep(3000);
+            }
+            catch (Exception e)
+            {
+                // do nothing
+            }
+            startActivity(0);
         }
         maxStorySize = storyBook.getNumImages();
         relay_box.setText(storyBook.getTitle());
@@ -535,7 +543,6 @@ public class MainActivity extends ActionBarActivity {
     // starts a fight event
     public void startBossActivity() {
 
-        user.fullHeal();
         players = new ArrayList<Character>();
         players.add(user);
 
@@ -620,16 +627,9 @@ public class MainActivity extends ActionBarActivity {
         if(win == true)
             mainImage.setImageResource(R.drawable.game_win);
         else{
-            try {
                 mainImage.setImageResource(R.drawable.game_lose);
-                Thread.sleep(3);
                 // start the story from the beginning
                 stories = new Stories();
-            }
-            catch (Exception e)
-            {
-
-            }
         }
 
     }
