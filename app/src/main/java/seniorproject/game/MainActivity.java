@@ -36,6 +36,7 @@ import JavaFiles.Characters.Warrior;
 import JavaFiles.Characters.Wizard;
 import JavaFiles.Events.EventHandler;
 import JavaFiles.Events.HostEventHandler;
+import JavaFiles.StatusEffects.Poison_StatusEffect;
 import JavaFiles.Stories.Stories;
 import JavaFiles.Stories.Story;
 
@@ -96,6 +97,7 @@ public class MainActivity extends ActionBarActivity {
     String bossChosen;
     private boolean sentMsg;
     private boolean singlePlayer;
+    private int maxStorySize;
 
     // Character Data
     private ArrayList<Character> players;
@@ -159,7 +161,7 @@ public class MainActivity extends ActionBarActivity {
                                     bossChosen = "Robot";
                                     button1.setEnabled(true);
                                     button2.setEnabled(true);
-                                    startActivity(2); //Start event Activity
+                                    startActivity(1); //Start event Activity
 
                                 } else //(messageRead.equals("STORYPOINT2")) { //You both disagree, just start the first option.
                                 {
@@ -168,11 +170,11 @@ public class MainActivity extends ActionBarActivity {
                                     bossChosen = "Squiggle";
                                     button1.setEnabled(true);
                                     button2.setEnabled(true);
-                                    startActivity(2);
+                                    startActivity(1);
                                 }
                             }
                             else {
-                                startActivity(2);
+                                startActivity(1);
                             }
                         }
                         break;
@@ -211,16 +213,17 @@ public class MainActivity extends ActionBarActivity {
                         startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
                         break;
                     case 1: //Story point 2
-                        if(story != 3) {
+                        if(story < maxStorySize - 1) {
                             story++;
-                            if(story == 3) {
-                                button1.setText("Choose 1");
-                                button2.setText("Choose 2");
-                            }
+                            //if(story == 3) {
+                            //    button1.setText("Choose 1");
+                            //    button2.setText("Choose 2");
+                            //}
                             mainImage.setImageResource(storyImages.get(story));
                         }
                         else {
-                            story--;
+                            // reset the story
+                            story = 0;
                             Log.d(LOG, messageRead);
                             if (singlePlayer == false) {
                                 sendMsg("STORYPOINT2"); //Tell other device you chose an option.
@@ -236,21 +239,21 @@ public class MainActivity extends ActionBarActivity {
                                     bossChosen = "Robot";
                                     button1.setEnabled(true);
                                     button2.setEnabled(true);
-                                    startActivity(2); //Start event Activity
+                                    startActivity(1); //Start event Activity
                                     sendMsg("start2"); //Make sure the other device is on the same activity.
                                 } else if (messageRead.equals("STORYPOINT1")) {
                                     messageRead = "";
                                     button1.setBackgroundColor(Color.LTGRAY);
                                     button1.setEnabled(true);
                                     button2.setEnabled(true);
-                                    startActivity(2); //Start event activity
+                                    startActivity(1); //Start event activity
                                     bossChosen = "Squiggle";
                                     sendMsg("start2"); //Make sure the other device is on the same activity.
                                 }
-                                //startActivity(2);
+                                //startActivity(1);
                             }
                             else {
-                                startActivity(2);
+                                startActivity(1);
                             }
                         }
                         break;
@@ -300,13 +303,11 @@ public class MainActivity extends ActionBarActivity {
                                 int statusCode = useMoveBluetooth(moveUsed);
                                 if(statusCode == 1)
                                 {
-                                    // player won, go to next story
-                                    relay_box.setText("You Win!");
+                                    startActivity(1);
                                 }
                                 else if(statusCode == 2)
                                 {
-                                    //player lost, go to main menu?
-                                    relay_box.setText("You lose :(");
+                                    mainImage.setImageResource(R.drawable.game_lose);
                                 }
                                 moveSelected = null;
                                 targetName = null;
@@ -482,48 +483,47 @@ public class MainActivity extends ActionBarActivity {
      */
     public void startStoryActivity() {
         storyImages.clear(); //Get a new story.
-        ArrayList<Story> storyBook = stories.getStories(); //A list of all stories in the game.
-        if(storyBook.isEmpty()) {
-            startActivity(3);
+
+        Story storyBook = stories.getNextStory(); //A list of all stories in the game.
+        maxStorySize = storyBook.getNumImages();
+        relay_box.setText(storyBook.getTitle());
+
+        // if this is the first story point, assign our character
+        if(stories.getStoryPoint() == 0)
+        {
+            if(storyBook.getTitle().contains("Warrior"))
+                user = new Warrior();
+            else if (storyBook.getTitle().contains("magic"))
+                user = new Wizard();
+            else if (storyBook.getTitle().contains("enlightenment"))
+                user = new Monk();
+            else
+                user = new Rogue();
+        }
+        // starts an event if the story says we need an event
+        if(storyBook.isEvent()) {
+            bossChosen = storyBook.getBossName();
+            startActivity(2);
+        }
+        else if(storyBook.isDecision())
+        {
+            button1.setText("Yes");
+            button2.setText("No");
+            mainImage.setImageResource(storyBook.getImage().get(0)); //Show the first image.
         }
         else {
-            Random random = new Random();
-            int rand = random.nextInt(storyBook.size()); //Pick a random story.
-            Story temp = storyBook.get(rand);
-            storyImages = temp.getImage(); //Fill the story arraylist with images.
-            relay_box.setText(temp.getTitle());
+            storyImages = storyBook.getImage(); //Fill the story arraylist with images.
             mainImage.setImageResource(storyImages.get(0)); //Show the first image.
-            stories.removeStory(temp); //Remove the story from the story book so we don't repeat.
         }
     }
 
     // starts a fight event
     public void startBossActivity() {
 
+        user.fullHeal();
         players = new ArrayList<Character>();
-        Random rng = new Random();
-        int characterNumber = rng.nextInt(4);
-
-        if(characterNumber == 0)
-        {
-            user = new Warrior();
-        }
-        else if(characterNumber == 1)
-        {
-            user = new Wizard();
-        }
-        else if(characterNumber == 2)
-        {
-            user = new Rogue();
-        }
-        else
-        {
-            user = new Monk();
-        }
         players.add(user);
 
-
-        bossChosen = "Squiggle";
         loadBossImage();
 
         this.handler = new HostEventHandler(players, bossChosen);

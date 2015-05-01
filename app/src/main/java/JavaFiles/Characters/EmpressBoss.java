@@ -32,7 +32,7 @@ public class EmpressBoss extends Character {
     private Stat getEmpressStats()
     {
         return new Stat
-                        (2000,    // Health
+                        (100,    // Health
                         18,     // Strength
                         6,      // Intelligence
                         8,      // Agility

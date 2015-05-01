@@ -151,4 +151,9 @@ public abstract class Character {
         return result;
     }
 
+    // fully heals a characters hp before the next encounter
+    public void fullHeal()
+    {
+        this.stat.modifyHealth(-100);
+    }
 }

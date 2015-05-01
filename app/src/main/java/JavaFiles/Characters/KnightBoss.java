@@ -32,7 +32,7 @@ public class KnightBoss extends Character {
     private Stat getKnightStats()
     {
         return new Stat
-                        (1000,    // Health
+                        (100,    // Health
                         18,     // Strength
                         6,      // Intelligence
                         8,      // Agility

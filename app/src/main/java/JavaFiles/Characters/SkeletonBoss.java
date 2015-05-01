@@ -32,7 +32,7 @@ public class SkeletonBoss extends Character {
     private Stat getSkeletonStats()
     {
         return new Stat
-                        (500,    // Health
+                        (100,    // Health
                         18,     // Strength
                         6,      // Intelligence
                         8,      // Agility
