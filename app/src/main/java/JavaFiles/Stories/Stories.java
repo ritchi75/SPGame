@@ -35,12 +35,10 @@ public class Stories {
     // Returns a list of stories which will be displayed to the user
     //  Keeps track of where we are in the story
     public Story getNextStory() {
-        // advance the story
-        storyPoint += 1;
         Random rng = new Random();
 
         // check if the last story we did was a decision event we need to finish
-        if (lastDecisionEvent == null) {
+        if (lastDecisionEvent != null) {
             String lastDecisionEventTitle = lastDecisionEvent.getTitle();
             lastDecisionEvent= null;
 
@@ -86,6 +84,8 @@ public class Stories {
             }
 
         } else {
+            // advance the story
+            storyPoint += 1;
             switch (storyPoint) {
                 case 0:
                     return stories.get(rng.nextInt(4));
@@ -93,18 +93,32 @@ public class Stories {
                     // make sure we have at least one optional decision to update
                     if (optionalDecisions.size() > 0) {
                         // if we roll higher than 1, perform an optional deicison event
-                        if (rng.nextInt(3) > 1) {
+                        if (rng.nextInt(2) > 0) {
                             // make sure we come back to this story point next time
                             storyPoint--;
                             // get a random decision event
                             Story story = this.optionalDecisions.get(rng.nextInt(optionalDecisions.size()));
-                            optionalDecisions.remove(story);
                             lastDecisionEvent = story;
+                            optionalDecisions.remove(story);
                             return story;
                         }
-                    } else
-                        return stories.get(4);
+                    }
+                    return stories.get(4);
+
                 case 2:
+                    // make sure we have at least one optional decision to update
+                    if (optionalDecisions.size() > 0) {
+                        // if we roll higher than 1, perform an optional deicison event
+                        if (rng.nextInt(2) > 0) {
+                            // make sure we come back to this story point next time
+                            storyPoint--;
+                            // get a random decision event
+                            Story story = this.optionalDecisions.get(rng.nextInt(optionalDecisions.size()));
+                            lastDecisionEvent = story;
+                            optionalDecisions.remove(story);
+                            return story;
+                        }
+                    }
                     return stories.get(5);
                 case 3:
                     // if we roll higher than 1, perform an optional deicison event
@@ -113,11 +127,11 @@ public class Stories {
                         storyPoint--;
                         // get a random decision event
                         Story story = this.optionalDecisions.get(rng.nextInt(optionalDecisions.size()));
+                        lastDecisionEvent = story;
                         optionalDecisions.remove(story);
-
                         return story;
-                    } else
-                        return stories.get(6);
+                    }
+                   return stories.get(6);
                 case 4:
                     return stories.get(7);
                 case 5:
@@ -297,47 +311,47 @@ public class Stories {
         // travelling salesman good accept
         images.add(R.drawable.salesman_good1);
         images.add(R.drawable.salesman_good2);
-        decisionOutcomesAccept.add(new Story("Travelling Salesman Offer Accepted", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Travelling Salesman Offer Accepted", images, false, false, null));
 
         // travelling salesman bad accept
         images.clear();
         images.add(R.drawable.salesman_bad1);
         images.add(R.drawable.salesman_bad2);
-        decisionOutcomesAccept.add(new Story("Travelling Salesman Offer Accepted", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Travelling Salesman Offer Accepted", images, false, false, null));
 
         // alley man good accept
         images.clear();
         images.add(R.drawable.alley_good1);
         images.add(R.drawable.alley_good2);
-        decisionOutcomesAccept.add(new Story("Alleyman Offer Accepted", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Alleyman Offer Accepted", images, false, false, null));
 
         // alley man bad accept
         images.clear();
         images.add(R.drawable.alley_bad1);
         images.add(R.drawable.alley_bad2);
-        decisionOutcomesAccept.add(new Story("Alleyman Offer Accepted", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Alleyman Offer Accepted", images, false, false, null));
 
         // strange plant good accept
         images.clear();
         images.add(R.drawable.strange_good_eat);
-        decisionOutcomesAccept.add(new Story("Eat The Strange Fruit", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Eat The Strange Fruit", images, false, false, null));
 
         // strange plant bad accept
         images.clear();
         images.add(R.drawable.strange_bad_eat);
-        decisionOutcomesAccept.add(new Story("Eat The Strange Fruit", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Eat The Strange Fruit", images, false, false, null));
 
         // drunkard good accept
         images.clear();
         images.add(R.drawable.drunk_good1);
         images.add(R.drawable.drunk_good2);
-        decisionOutcomesAccept.add(new Story("Drunkard Offer Accepted", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Drunkard Offer Accepted", images, false, false, null));
 
         // drunkard bad accept
         images.clear();
         images.add(R.drawable.drunk_bad1);
         images.add(R.drawable.drunk_bad2);
-        decisionOutcomesAccept.add(new Story("Drunkard Offer Accepted", images, false, true, null));
+        decisionOutcomesAccept.add(new Story("Drunkard Offer Accepted", images, false, false, null));
 
         // travelling salesman decline
         images.clear();
@@ -347,17 +361,17 @@ public class Stories {
         // travelling alleyman decline
         images.clear();
         images.add(R.drawable.alley_abandon);
-        decisionOutcomesDecline.add(new Story("Alleyman Offer Declined", images, false, true, null));
+        decisionOutcomesDecline.add(new Story("Alleyman Offer Declined", images, false, false, null));
 
         // travelling salesman decline
         images.clear();
         images.add(R.drawable.strange_abandon);
-        decisionOutcomesDecline.add(new Story("Strange Fruit Not Eaten", images, false, true, null));
+        decisionOutcomesDecline.add(new Story("Strange Fruit Not Eaten", images, false, false, null));
 
         // travelling salesman decline
         images.clear();
         images.add(R.drawable.drunk_abandon);
-        decisionOutcomesDecline.add(new Story("Drunkard Offer Declined", images, false, true, null));
+        decisionOutcomesDecline.add(new Story("Drunkard Offer Declined", images, false, false, null));
     }
 
     // returns the story point we are currently on
