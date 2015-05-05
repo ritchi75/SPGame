@@ -47,7 +47,6 @@ import JavaFiles.Stories.Story;
  * The third screen will be the battle itself, once the battle has ended it will go to the second module.
  */
 public class MainActivity extends ActionBarActivity {
-
     Context context;
     private static final String LOG = "Matt"; //Solely used to debug our code.
     // Intent request codes
@@ -542,6 +541,12 @@ public class MainActivity extends ActionBarActivity {
 
     // starts a fight event
     public void startBossActivity() {
+
+        if(!singlePlayer)
+        {
+            relay_box.setText("Multiplayer not supported currently. You may continue in singleplayer mode ");
+            singlePlayer = true;
+        }
 
         players = new ArrayList<Character>();
         players.add(user);

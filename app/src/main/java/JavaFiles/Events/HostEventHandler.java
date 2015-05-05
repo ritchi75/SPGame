@@ -44,7 +44,7 @@ public class HostEventHandler extends EventHandler {
         {
             target = findTargetByName(targetName);
         }
-        else // we used defend. target ourself
+        else // we used defend. target yourself
         {
             target = findTargetByName(userName);
         }
